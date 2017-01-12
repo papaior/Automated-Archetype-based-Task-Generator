@@ -42,9 +42,9 @@ stimVar.shape.triangle = '>';
 stimVar.shape.oval = '*';
 stimVar.shape.diamond = '$';
 
-stimVar.size.small = 26;
+stimVar.size.small = 30;
 stimVar.size.medium = 50;
-stimVar.size.large = 60;
+stimVar.size.large = 83;
 
 stimVar.orientation.lefttilt = -45;
 stimVar.orientation.notilt = 0;
