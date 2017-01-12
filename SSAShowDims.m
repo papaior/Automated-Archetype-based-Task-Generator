@@ -1,15 +1,13 @@
-sca
 %%
 clear;
 Screen('CloseALL');
-%Screen('Preference', 'SkipSyncTests', 1);
 
 load('stimVars.mat');
 
 screens = Screen('Screens');
 screenNumber = max(screens);
 % screenNumber = 0;
-Screen('Preference', 'DefaultFontName', 'Subfont' )
+Screen('Preference', 'DefaultFontName', 'Helvetica' );
 
 resAdjusted = false;
 scaleFactors = [1 1];
@@ -47,7 +45,7 @@ end
 %pick default colors and other settings
 white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
-bgcol = white/5;
+bgcol = white/2;
 % bgcol = white;
 grid.col = black;
 grid.bgcol = white/5;
@@ -58,7 +56,7 @@ isi = 0.500;
 iti = 1;
 
 PsychImaging('PrepareConfiguration');
-[expWin,rect]=PsychImaging('OpenWindow',screenNumber, bgcol);
+[expWin,rect]=PsychImaging('OpenWindow',screenNumber, grid.bgcol);
 
 %% show all the dimensions
 dimnames = fieldnames(stimVar);
@@ -75,9 +73,10 @@ for idx = 1:4
 		message = strcat(message,'s');
 	end
 	message = message{1};
-	DrawFormattedText(expWin, message, 'center', 35*scaleFactors(2), black);
-	DrawFormattedText(expWin, 'Click anywhere to continue.', 'center', 'center', black,[],[],[],[],[],[0,res.height-50*scaleFactors(2),res.width,res.height]);
-	letterscreen = Screen('OpenOffscreenWindow', screenNumber, bgcol, rect);
+	DrawFormattedText(expWin, message, 'center', 35*scaleFactors(2), white);
+	DrawFormattedText(expWin, 'Click anywhere to continue.', 'center', 'center', white,[],[],[],[],[],[0,res.height-50*scaleFactors(2),res.width,res.height]);
+	letterscreen = Screen('OpenOffscreenWindow', screenNumber, grid.bgcol, rect);
+    Screen('TextFont',letterscreen,'Subfont');
 
 	symbols = fieldnames(stimVar.(dimnames{idx}));
 	numsymbols = numel(symbols);
@@ -104,9 +103,9 @@ for idx = 1:4
 			Screen('TextSize',letterscreen,floor(currsym.size*scaleFactors(2)));
 			[x,y,letterrect] = DrawFormattedText(letterscreen,currsym.shape,'center','center',currsym.colors,[],[],[],[],[],letterrect);
 			Screen('DrawTexture', expWin, letterscreen, letterrect, letterrect, currsym.orientation);
-			if ~ strcmp(dimnames{idx},'shape')
-				DrawFormattedText(expWin,symbols{(hd-1)*sym_per_row+wd},'center','center',black,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+floor(50*scaleFactors(2))]);
-			end
+% 			if ~ strcmp(dimnames{idx},'shape')
+				DrawFormattedText(expWin,symbols{(hd-1)*sym_per_row+wd},'center','center',white,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+floor(50*scaleFactors(2))]);
+% 			end
 			xoffset = xoffset+widthS;
 		end
 		ystart = ystart + heightS;
