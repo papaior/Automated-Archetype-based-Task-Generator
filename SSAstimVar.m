@@ -8,7 +8,7 @@ stimVar.colors.pink = [255 25 128]';
 stimVar.colors.green = [0 128 50]';
 stimVar.colors.grey = [160 160 160]';
 stimVar.colors.purple = [153 0 255]';
-stimVar.colors.brown = [115 65 25]';
+stimVar.colors.brown = [120 70 25]';
 
 
 stimVar.shape.A = 'A';
