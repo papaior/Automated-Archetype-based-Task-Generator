@@ -46,19 +46,19 @@ stimVar.size.small = 30;
 stimVar.size.medium = 50;
 stimVar.size.large = 83;
 
-stimVar.orientation.lefttilt = -45;
-stimVar.orientation.notilt = 0;
-stimVar.orientation.righttilt = 45;
+stimVar.orientation.left_tilt = -45;
+stimVar.orientation.upright = 0;
+stimVar.orientation.right_tilt = 45;
 
-stimVar.location.topleft = [0 0];
-stimVar.location.middleleft = [0 1];
-stimVar.location.bottomleft = [0 2];
-stimVar.location.topcenter = [1 0];
-stimVar.location.middlecenter = [1 1];
-stimVar.location.bottomcenter = [1 2];
-stimVar.location.topright = [2 0];
-stimVar.location.middleright = [2 1];
-stimVar.location.bottomright = [2 2];
+stimVar.location.top_left = [0 0];
+stimVar.location.middle_left = [0 1];
+stimVar.location.bottom_left = [0 2];
+stimVar.location.top_center = [1 0];
+stimVar.location.middle_center = [1 1];
+stimVar.location.bottom_center = [1 2];
+stimVar.location.top_right = [2 0];
+stimVar.location.middle_right = [2 1];
+stimVar.location.bottom_right = [2 2];
 
 stimVar.screen.screen1 = 1;
 stimVar.screen.screen2 = 2;
