@@ -63,7 +63,7 @@ dimnames = fieldnames(stimVar);
 defsymbol.colors = stimVar.colors.red;
 defsymbol.shape = stimVar.shape.A;
 defsymbol.size = stimVar.size.medium;
-defsymbol.orientation = stimVar.orientation.notilt;
+defsymbol.orientation = stimVar.orientation.upright;
 sym_per_row = 6;
 
 for idx = 1:4

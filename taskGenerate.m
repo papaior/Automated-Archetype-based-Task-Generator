@@ -44,28 +44,33 @@ for idx = 1:dim
 		case {1,3}
 			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
 			addition = nlst{targets(idx).subcat};
-			addition = strcat({' a(n) '},addition,{' item'});
+			addition = strcat(addition,{' item'});
 		case 2
 			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
-			addition = nlst{targets(idx).subcat};
-			addition = strcat({' a(n) '},addition);
+			addition = strcat({nlst{targets(idx).subcat}});
 		case 4
-			nlst = {'left-tilted','upright','right-tilted'};
+			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
 			addition = nlst{targets(idx).subcat};
-			addition = strcat({' a(n) '},addition,{' item'});
+			addition = strcat(addition,{' item'});
 		case 5
-			nlst = {'top left corner', 'middle left', 'bottom left corner', 'top center', 'middle center', 'bottom center', 'top right corner', 'middle right', 'bottom right corner'};
+% 			nlst = {'top left corner', 'middle left', 'bottom left corner', 'top center', 'middle center', 'bottom center', 'top right corner', 'middle right', 'bottom right corner'};
+			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
 			addition = nlst{targets(idx).subcat};
-			addition = strcat({' an item on the '},addition);
+			addition = strcat({'item on the '},addition);
 		case 6
-			addition = strcat({' an item on the screen '},int2str(targets(idx).subcat));
+			addition = strcat({'item on the screen '},int2str(targets(idx).subcat));
+	end
+	if sum(addition{1}(1) == ['a' 'e' 'i' 'o' 'u' 'F' 'H' 'I' 'N' 'O' 'R' 'S' 'X'])
+		addition = strcat({' an '}, addition);
+	else
+		addition = strcat({' a '}, addition);
 	end
 	if idx ~= dim
 		addition = strcat(addition,{', '},logickey);
 	end
 	task.instructions = strcat(task.instructions, addition);
 end
-task.instructions = strcat(task.instructions, {', please click "Present", otherwise please click "Absent".\n'});
+task.instructions = strcat(task.instructions, {', please click "Present"; otherwise please click "Absent".\n'});
 temp = task.instructions{1};
 interval = 50;
 for idx = strfind(temp, ' ')
