@@ -8,5 +8,5 @@
 - [ ] add text "click to see features"
 - [ ] add text "no target present present" if giving feedback
 - [ ] new archtype two targets with up to four dimensions in total (big x and red y)
-- [ ] split tasks/trials generation
+- [x] split tasks/trials generation
 - [ ] figure out names for the archtypes to name the files
