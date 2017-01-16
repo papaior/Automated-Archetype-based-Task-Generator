@@ -7,6 +7,6 @@
 - [x] change a(n) to comply with the vowels
 - [ ] add text "click to see features"
 - [ ] add text "no target present" if giving feedback
-- [ ] new archtype two targets with up to four dimensions in total (big x and red y)
+- [ ] new archetype two targets with up to four dimensions in total (big x and red y)
 - [x] split tasks/trials generation
-- [ ] figure out names for the archtypes to name the files
+- [ ] figure out names for the archetypes to name the files
