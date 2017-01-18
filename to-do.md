@@ -10,5 +10,3 @@
 - [x] new archetype two targets with up to four dimensions in total (big x and red y)
 - [x] split tasks/trials generation
 - [ ] figure out names for the archetypes to name the files
-
-found bug: only 'present' answers are counted as correct.
