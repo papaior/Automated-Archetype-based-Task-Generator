@@ -36,9 +36,11 @@ while sum(targets(dim1).subcat == targets(dim2).subcat) == nnz(targets(dim1).sub
 	targets(dim1).subcat(idx) = randi(fsegs(idx));
 end
 
-task.instructions = {'If there is'};
+task.instructions = {'If there'};
 if logic==0
-	task.instructions = strcat(task.instructions, ' one and only one of');
+	task.instructions = strcat(task.instructions, ' is one and only one of');
+else
+	task.instructions = strcat(task.instructions, ' are both');
 end
 logickey = {'or', 'and'};
 logickey = logickey(logic+1);
