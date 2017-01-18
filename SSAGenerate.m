@@ -14,7 +14,7 @@ end
 stims = struct();
 plist = fieldnames(stimVar);
 stimtargets = struct();
-choices = cellstr(['Present'; 'Absent ']);
+choices = cellstr(['Present'; 'Absent']);
 for t=1:5
 	stimtargets(1,t).targetNum = 0;
 	stimtargets(1,t).screenno = [];
@@ -156,9 +156,9 @@ for trial = 1:numtrials
 					dname = fieldnames(stimVar.(plist{SSATargets(dimx).category}));
 					stims(trial,screen,location).(plist{SSATargets(dimx).category}) = stimVar.(plist{SSATargets(dimx).category}).(dname{SSATargets(dimx).subcat});
                     
-                    stimtargets(1,trial).targetNum = stimtargets(1,trial).targetNum +1;
-                    stimtargets(1,trial).screenno = [stimtargets(1,trial).screenno screen];
-                    stimtargets(1,trial).locno = [stimtargets(1,trial).locno location];
+					stimtargets(1,trial).targetNum = stimtargets(1,trial).targetNum +1;
+					stimtargets(1,trial).screenno = [stimtargets(1,trial).screenno screen];
+					stimtargets(1,trial).locno = [stimtargets(1,trial).locno location];
 				end
 			end
 		end
