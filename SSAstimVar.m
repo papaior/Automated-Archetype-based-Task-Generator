@@ -60,15 +60,15 @@ stimVar.location.top_right = [2 0];
 stimVar.location.middle_right = [2 1];
 stimVar.location.bottom_right = [2 2];
 
-stimVar.screen.screen1 = 1;
-stimVar.screen.screen2 = 2;
-stimVar.screen.screen3 = 3;
-stimVar.screen.screen4 = 4;
-stimVar.screen.screen5 = 5;
-stimVar.screen.screen6 = 6;
-stimVar.screen.screen7 = 7;
-stimVar.screen.screen8 = 8;
-stimVar.screen.screen9 = 9;
+stimVar.screen.screen_1 = 1;
+stimVar.screen.screen_2 = 2;
+stimVar.screen.screen_3 = 3;
+stimVar.screen.screen_4 = 4;
+stimVar.screen.screen_5 = 5;
+stimVar.screen.screen_6 = 6;
+stimVar.screen.screen_7 = 7;
+stimVar.screen.screen_8 = 8;
+stimVar.screen.screen_9 = 9;
 
 
 save('stimVars','stimVar')

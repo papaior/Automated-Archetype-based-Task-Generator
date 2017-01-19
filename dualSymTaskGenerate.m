@@ -40,7 +40,7 @@ task.instructions = {'If there'};
 if logic==0
 	task.instructions = strcat(task.instructions, ' is one and only one of');
 else
-	task.instructions = strcat(task.instructions, ' are both');
+	task.instructions = strcat(task.instructions, ' is both');
 end
 logickey = {'or', 'and'};
 logickey = logickey(logic+1);

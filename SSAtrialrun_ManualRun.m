@@ -35,7 +35,7 @@ white = WhiteIndex(screenNumber);
 black = BlackIndex(screenNumber);
 bgcol = [1 1 1]*white/2;
 grid.col = black;
-grid.bgcol = [1 1 1]*white/5;
+grid.bgcol = [1 1 1]*white/4;
 highlightcol = [255 100 100];
 textcol = [1 1 1]*black;
 txtsize = round(res.height/28);
@@ -242,7 +242,7 @@ while trial <= size(stims,1)
             mouseOver = mouseOverText*(mousex<=checkRect(3) && mousex >=checkRect(1));
             mouseOver = mouseOver*(mousey<=checkRect(4) && mousey>=checkRect(2));
             
-            if mouseOver %if the mouse is on a grid square, find the values for that stim
+            if mouseOver && ~stims(trial,screen,loc).discard %if the mouse is on a grid square, find the values for that stim
               mouseOverValues = struct(); %creates struct that saves values
               %Get all fields
               mOFields = [fieldnames(stimVar)];
@@ -251,8 +251,10 @@ while trial <= size(stims,1)
                 mOSubfields = [fieldnames(stimVar.(mOField))];
                 for mOSubfieldCount = 1:length(mOSubfields)%check all subfields
                   mOSubfield = mOSubfields{mOSubfieldCount}; %get names of subfields
-                  if stims(trial,screen,loc).(mOField) == stimVar.(mOField).(mOSubfield) %check if stim value is this subfield
-                    mouseOverValues.(mOField) = mOSubfield; %if it is, store this field as being this subfield (e.g. store "colors" as "red" for this stim)
+                  if length(stims(trial,screen,loc).(mOField)) == length(stimVar.(mOField).(mOSubfield))
+                      if stims(trial,screen,loc).(mOField) == stimVar.(mOField).(mOSubfield) %check if stim value is this subfield
+                          mouseOverValues.(mOField) = mOSubfield; %if it is, store this field as being this subfield (e.g. store "colors" as "red" for this stim)
+                      end
                   end
                 end
               end
@@ -262,15 +264,23 @@ while trial <= size(stims,1)
               Screen('TextSize',mOScreen,txtsize);
               DrawFormattedText(mOScreen,mouseOverString,'center',round(0.02*res.height),white); %add text
               Screen('DrawTexture',expWin,mOScreen)%load texture into the online window
-              Screen('Flip',expWin); %flip
+              mOscreentime = Screen('Flip',expWin); %flip
               Screen('DrawTexture',expWin,testscreen);%reset screen
+            elseif GetSecs > mOscreentime+0.2
+                Screen('DrawTexture',expWin,testscreen);
+                mOscreentime = Screen('Flip',expWin); %flip
+                Screen('DrawTexture',expWin,testscreen);%reset screen
             end
+            
             
           end
           for ith = 1:numbuttons
             if buttons.loc(ith,1)<= mousex && mousex <=buttons.loc(ith,3) && buttons.loc(ith,2)<= mousey && mousey <=buttons.loc(ith,4)
               response = buttons.label(ith);
               screen = size(stims,2)+1; %this ends this loop to move to the next trial
+              if ~replay
+                feedback(trial) = strcmp(response{:},stimtargets(trial).correct);
+              end
               cont = 1;
             end
           end
@@ -284,9 +294,6 @@ while trial <= size(stims,1)
   Screen('DrawTexture',expWin,blank); %load blank texture into the online window
   Screen('Flip',expWin);% present blank screen during iti
   WaitSecs(iti); %iti
-  
-  %Calculating accuracy
-  feedback(trial) = strcmp(response{:},stimtargets(trial).correct);
   
   %write info in logfile
   fprintf(log,'%s\t%s\t%.f\t%s\t%s\t%.f\t%.f\t%.f\n',datestr(now,'yyyy/mm/dd'),datestr(now,'HH:MM:SS'),trial,response{:},stimtargets(trial).correct,feedback(trial),stimtargets(trial).screenno,stimtargets(trial).locno);

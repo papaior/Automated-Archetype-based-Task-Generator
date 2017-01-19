@@ -14,7 +14,7 @@ end
 stims = struct();
 plist = fieldnames(stimVar);
 stimtargets = struct();
-choices = cellstr(['Present'; 'Absent']);
+choices = {'Present' 'Absent'};
 for t=1:5
 	stimtargets(1,t).targetNum = 0;
 	stimtargets(1,t).screenno = [];
