@@ -2,7 +2,7 @@
 - [x] add dash to location labels
 - [x] change instructions to match labels
 - [ ] change stimuli font to an existing one + special characters (same height as letters)
-- [ ] make large size larger
+- [x] make large size larger
 - [x] delete comma before 'and's in instructions
 - [x] change a(n) to comply with the vowels
 - [ ] add text "click to see features"
