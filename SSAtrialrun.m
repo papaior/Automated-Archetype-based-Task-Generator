@@ -157,7 +157,7 @@ while trial <= size(stims,1)
               
     
     for loc =  1:size(stims,3) %this prints all the stimuli
-      Screen('TextFont',letterscreen,'Subfont'); %this font will actually is a custom font.
+      Screen('TextFont',letterscreen,'Open Sans Condensed'); %this font will actually is a custom font.
       %Screen('TextStyle',testscreen,stims(trial,screen,loc).orientation); %Sets orientartion
       Screen('TextSize',letterscreen,stims(trial,screen,loc).size ); %sets size
       letterrect =[0 0 Screen('TextSize',letterscreen)+10 Screen('TextSize',letterscreen)+10];
