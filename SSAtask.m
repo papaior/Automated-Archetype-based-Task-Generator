@@ -54,11 +54,11 @@ end
 
 %% Print instructions
 
-SSA.instructions = 'You''re looking for an item that is';
+SSA.instructions = sprintf(' Look for the');
+
 
 if ~isempty(SSA.yess)
   SSA.yess = cell2struct(SSA.yess(:,2),SSA.yess(:,1),1);
-  SSA.instructions = sprintf('%s a(n):\n',SSA.instructions);
   if isfield(SSA.yess, 'size')
      SSA.instructions = sprintf('%s %s', SSA.instructions, SSA.yess.size);
     if isfield(SSA.yess, 'colors')
@@ -70,6 +70,15 @@ if ~isempty(SSA.yess)
     SSA.instructions = sprintf('%s %s', SSA.instructions, SSA.yess.colors);
   end
   
+  if isfield(SSA.yess,'orientation')
+      if strcmp(SSA.yess.orientation, 'upright')
+          if isfield(SSA.yess, 'colors')
+              SSA.instructions = [SSA.instructions ','];
+          end
+          SSA.instructions = sprintf('%s %s',SSA.instructions,SSA.yess.orientation);
+      end
+  end
+  
   if isfield(SSA.yess, 'shape')
     SSA.instructions = sprintf('%s %s', SSA.instructions, SSA.yess.shape);
   else
@@ -77,9 +86,7 @@ if ~isempty(SSA.yess)
   end
   
   if isfield(SSA.yess,'orientation')
-    if strcmp(SSA.yess.orientation, 'notilt')
-      SSA.instructions = sprintf('%s with %s',SSA.instructions,SSA.yess.orientation);
-    else
+    if ~strcmp(SSA.yess.orientation, 'upright')
       SSA.instructions = sprintf('%s with a %s',SSA.instructions,SSA.yess.orientation);
     end
   end
@@ -94,15 +101,40 @@ if ~isempty(SSA.yess)
       SSA.instructions = sprintf('%s on %s', SSA.instructions, SSA.yess.screen);
     end
   end
-  SSA.instructions = sprintf('%s\n',SSA.instructions);
+  
   if ~isempty(SSA.nos)
-    SSA.instructions = sprintf('%s and',SSA.instructions);
+    SSA.instructions = sprintf('%s,\n that is',SSA.instructions);
+  else
+      SSA.instructions = sprintf('%s\n',SSA.instructions);
   end
 end
 
 if ~isempty(SSA.nos)
   SSA.nos = cell2struct(SSA.nos(:,2),SSA.nos(:,1),1);
-  SSA.instructions = sprintf('%s *NOT* a(n):\n',SSA.instructions);
+  SSA.instructions = sprintf('%s *NOT* a',SSA.instructions);
+  dimensionorder = {'size','colors','orientation','shape','orientation','location','screen'};
+  vowels = 'aAeEiIoOuUhH';
+  nosvalues = {};
+  
+  
+  for ithdim = 1:length(dimensionorder)
+    if isfield(SSA.nos, dimensionorder{ithdim})
+        if ithdim == 3 && ~strcmp(SSA.nos.orientation, 'upright')
+        elseif ithdim == 5 && strcmp(SSA.nos.orientation, 'upright')
+        else
+            nosvalues = [nosvalues, SSA.nos.(dimensionorder{ithdim})];   
+        end
+    elseif ithdim == 4
+        nosvalues = [nosvalues, 'item'];
+    end
+  end
+ 
+  if ismember(nosvalues{1}(1),vowels) || all(ismember(nosvalues{1},'rR'))
+      SSA.instructions = sprintf('%sn',SSA.instructions);
+  else
+      SSA.instructions = sprintf('%s',SSA.instructions);
+  end
+  
   if isfield(SSA.nos, 'size')
      SSA.instructions = sprintf('%s %s', SSA.instructions, SSA.nos.size);
     if isfield(SSA.nos, 'colors')
@@ -114,6 +146,15 @@ if ~isempty(SSA.nos)
     SSA.instructions = sprintf('%s %s', SSA.instructions, SSA.nos.colors);
   end
   
+  if isfield(SSA.nos,'orientation')
+      if strcmp(SSA.nos.orientation, 'upright')
+          if isfield(SSA.nos, 'colors')
+              SSA.instructions = [SSA.instructions ','];
+          end
+          SSA.instructions = sprintf('%s, %s',SSA.instructions,SSA.nos.orientation);
+      end
+  end
+  
   if isfield(SSA.nos, 'shape')
     SSA.instructions = sprintf('%s %s', SSA.instructions, SSA.nos.shape);
   else
@@ -121,9 +162,7 @@ if ~isempty(SSA.nos)
   end
   
   if isfield(SSA.nos,'orientation')
-    if strcmp(SSA.nos.orientation, 'notilt')
-      SSA.instructions = sprintf('%s with %s',SSA.instructions,SSA.nos.orientation);
-    else
+    if ~strcmp(SSA.nos.orientation, 'upright')
       SSA.instructions = sprintf('%s with a %s',SSA.instructions,SSA.nos.orientation);
     end
   end
@@ -143,23 +182,41 @@ end
 SSA.instructions = sprintf('%s\n',SSA.instructions);
 
 if SSA.presence
-  SSA.instructions = sprintf('%sReport if the target was present or not.\n',SSA.instructions);
+  SSA.instructions = sprintf('%s Report if the target was present or not.\n',SSA.instructions);
 else
-  SSA.instructions = sprintf('%sReport if the target is', SSA.instructions);
-  if isfield(SSA.report,'colors')
-     SSA.instructions = sprintf('%s a(n) %s item', SSA.instructions,SSA.report.colors);
-  elseif isfield(SSA.report,'size')
-     SSA.instructions = sprintf('%s a %s item', SSA.instructions,SSA.report.size);
-  elseif isfield(SSA.report,'shape')
-     SSA.instructions = sprintf('%s a(n) %s', SSA.instructions,SSA.report.shape);
+    SSA.instructions = sprintf('%s Report if the target is', SSA.instructions);
+    if isfield(SSA.report,'colors')
+        if ismember(SSA.report.colors(1),vowels)
+            SSA.instructions = sprintf('%s a %s item', SSA.instructions,SSA.report.colors);
+        else
+            SSA.instructions = sprintf('%s a %s item', SSA.instructions,SSA.report.colors);
+        end
+    elseif isfield(SSA.report,'size')
+        if ismember(SSA.report.size(1),vowels)
+            SSA.instructions = sprintf('%s a %s item', SSA.instructions,SSA.report.size);
+        else
+            SSA.instructions = sprintf('%s a %s item', SSA.instructions,SSA.report.size);
+        end
+    elseif isfield(SSA.report,'shape')
+        if ismember(SSA.report.shape(1),[vowels 'rR'])
+            SSA.instructions = sprintf('%s an %s', SSA.instructions,SSA.report.shape);
+        else
+            SSA.instructions = sprintf('%s a %s', SSA.instructions,SSA.report.shape);
+        end
   elseif isfield(SSA.report,'orientation')
-     SSA.instructions = sprintf('%s an item with a %s', SSA.instructions,SSA.report.orientation);
+      if strcmp(SSA.report.orientation,'upright')
+          SSA.instructions = sprintf('%s %s', SSA.instructions,SSA.report.orientation);
+      else
+          SSA.instructions = sprintf('%s an item with a %s', SSA.instructions,SSA.report.orientation);
+      end
   elseif isfield(SSA.report,'location')
-     SSA.instructions = sprintf('%s an item on the %s', SSA.instructions,SSA.report.location);
+     SSA.instructions = sprintf('%s on the %s', SSA.instructions,SSA.report.location);
   elseif isfield(SSA.report,'screen')
-     SSA.instructions = sprintf('%s an item on %s', SSA.instructions,SSA.report.screen); 
+     SSA.instructions = sprintf('%s on %s', SSA.instructions,SSA.report.screen); 
   end
 end
+
+SSA.instructions = strrep( SSA.instructions,'_',' ');
 
 %makes sure both SSA.yess and SSA.nos are struct for compatibility
 if ~isstruct(SSA.yess)
