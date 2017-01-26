@@ -1,9 +1,12 @@
-logfile = 'ManualRun_logfile';
+ logfile = 'ManualRun_logfile';
 load('SSASpecs.mat');
 
 screens = Screen('Screens');
 screenNumber = max(screens);
-Screen('Preference', 'DefaultFontName', 'Helvetica' )
+Screen('Preference', 'DefaultFontName', 'Helvetica')
+
+fonts = struct2table(FontInfo('Fonts'));
+stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
 
 
 %make resolution into a standard res, or as close as we can get it (standardize across monitors)
@@ -182,6 +185,7 @@ while trial <= size(stims,1)
   WaitSecs(isi)
   
   screen = 1;
+  mOscreentime = GetSecs;
   while screen <= size(stims,2)
     Screen('DrawTexture',testscreen,blank); %reset testscreen screen to blank
     Screen('DrawTexture',testscreen,gridscreen); %copy the texture from gridscreen (i.e. grid plus all the buttons)
@@ -205,7 +209,7 @@ while trial <= size(stims,1)
               
     
     for loc =  1:size(stims,3) %this prints all the stimuli
-      Screen('TextFont',letterscreen,'Open Sans Condensed'); %this font will actually is a custom font.
+      Screen('TextFont',letterscreen,stimfontnum);%this font will actually is a custom font.
       %Screen('TextStyle',testscreen,stims(trial,screen,loc).orientation); %Sets orientartion
       Screen('TextSize',letterscreen,stims(trial,screen,loc).size ); %sets size
       if stims(trial,screen,loc).discard %if stim is to be blank, change it to bgcolor.
@@ -241,6 +245,7 @@ while trial <= size(stims,1)
             checkRect = [grid.pos+grid.rectsize.*stims(trial,screen,loc).location grid.pos+grid.rectsize.*(stims(trial,screen,loc).location+[1 1])];
             mouseOver = mouseOverText*(mousex<=checkRect(3) && mousex >=checkRect(1));
             mouseOver = mouseOver*(mousey<=checkRect(4) && mousey>=checkRect(2));
+           
             
             if mouseOver && ~stims(trial,screen,loc).discard %if the mouse is on a grid square, find the values for that stim
               mouseOverValues = struct(); %creates struct that saves values

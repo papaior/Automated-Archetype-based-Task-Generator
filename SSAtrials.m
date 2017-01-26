@@ -302,4 +302,4 @@ for trial = 1:numtrials
   
 end
 
-save('SSASpecs','stims','stimtargets', 'stimfoils','stimVar')
+save('SSASpecs','stims','stimtargets', 'stimfoils','stimVar','SSA','numtrials')
