@@ -1,0 +1,6 @@
+Date	Time	Trial	Response	CorrectResponse	Accuracy	TargetScreenNo	TargetLoc
+Date	Time	Trial	Response	CorrectResponse	Accuracy	TargetScreenNo	TargetLoc
+2017/01/25	18:38:28	1	Present	Present	1	9	6
+2017/01/25	18:38:52	1	Present	Present	1	9	6
+2017/01/25	18:39:25	2	Absent	Absent	1		
+2017/01/25	18:39:32	2	Present	Absent	1		

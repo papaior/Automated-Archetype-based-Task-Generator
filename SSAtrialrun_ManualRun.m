@@ -186,6 +186,7 @@ while trial <= size(stims,1)
   
   screen = 1;
   mOscreentime = GetSecs;
+  noclick = true;
   while screen <= size(stims,2)
     Screen('DrawTexture',testscreen,blank); %reset testscreen screen to blank
     Screen('DrawTexture',testscreen,gridscreen); %copy the texture from gridscreen (i.e. grid plus all the buttons)
@@ -225,6 +226,11 @@ while trial <= size(stims,1)
     DrawFormattedText(testscreen,sprintf('Screen %1.f',screen),'center','center',textcol,[],[],[],[],[],[0 (grid.border(4)+ grid.rectsize(2)/2) res.width (grid.border(4)+grid.rectsize(2)/2+sp.rectsize(2))]);
     
     Screen('DrawTexture',expWin,testscreen); %load texture into the online window
+    
+    if noclick
+      Screen('TextSize',expWin,txtsize);
+      DrawFormattedText(expWin,'Click on a stimulus to see the description','center',round(0.02*res.height),white); %add text
+    end
     Screen('Flip',expWin);% present things
     
     %wait for mouse click, and determine what to do next
@@ -264,19 +270,26 @@ while trial <= size(stims,1)
                 end
               end
               
-              mouseOverString = sprintf('%s, %s %s, with a %s',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.shape,mouseOverValues.orientation); %create string
+              mouseOverString = sprintf('%s, %s %s, with a',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.shape); %create string
+              if strcmp(mouseOverValues.orientation,'upright')
+                 mouseOverString = sprintf('%sn %s orientation',mouseOverString, mouseOverValues.orientation);
+              else
+                mouseOverString = sprintf('%s %s',mouseOverString, mouseOverValues.orientation);
+              end
+              mouseOverString = strrep(mouseOverString,'_',' ');
+              
               Screen('DrawTexture',mOScreen,testscreen);%copy testscreen to mO screen
               Screen('TextSize',mOScreen,txtsize);
               DrawFormattedText(mOScreen,mouseOverString,'center',round(0.02*res.height),white); %add text
               Screen('DrawTexture',expWin,mOScreen)%load texture into the online window
               mOscreentime = Screen('Flip',expWin); %flip
               Screen('DrawTexture',expWin,testscreen);%reset screen
+              noclick = false;
             elseif GetSecs > mOscreentime+0.2
                 Screen('DrawTexture',expWin,testscreen);
                 mOscreentime = Screen('Flip',expWin); %flip
                 Screen('DrawTexture',expWin,testscreen);%reset screen
             end
-            
             
           end
           for ith = 1:numbuttons
