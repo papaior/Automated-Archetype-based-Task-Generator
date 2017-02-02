@@ -1,6 +1,10 @@
 function [task, targets] = taskGenerate()
-dim = randi(4);
 logic = randi(2) - 1; % 1 for 'and', 0 for 'or'
+if logic
+	dim = randi(4);
+else
+	dim = randi(3) + 1;
+end
 task.presence = 1;
 task.report = {};
 task.dimension = dim;
@@ -32,54 +36,55 @@ for idx = 1:dim
 	targets(idx).subcat = temp(idx);
 end
 
-task.instructions = {'If there is'};
+task.instructions = {'If you see'};
 if logic==0
-	task.instructions = strcat(task.instructions, ' one and only one of');
+	nums = {' the item', ' either one of the two items', ' either one of the three items', ' either one of the four items'};
+	task.instructions = strcat(task.instructions, nums{dim});
+else
+	nums = {' the item', ' all of the two items', ' all of the three items', ' all of the four items'};
+	task.instructions = strcat(task.instructions, nums{dim});
 end
-logickey = {'or', 'and'};
-logickey = logickey(logic+1);
+task.instructions = strcat(task.instructions, ' listed below:');
+insitems = cell(dim, 1);
 for idx = 1:dim
-	addition = '';
+	insitems{idx} = {''};
 	switch targets(idx).category
 		case {1,3}
 			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
-			addition = nlst{targets(idx).subcat};
-			addition = strcat(addition,{' item'});
+			insitems{idx} = nlst{targets(idx).subcat};
+			insitems{idx} = strcat(insitems{idx},{' item'});
 		case 2
 			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
-			addition = strcat({nlst{targets(idx).subcat}});
+			insitems{idx} = strcat({nlst{targets(idx).subcat}});
 		case 4
 			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
-			addition = nlst{targets(idx).subcat};
-			addition = strcat(addition,{' item'});
+			insitems{idx} = nlst{targets(idx).subcat};
+			insitems{idx} = strcat(insitems{idx},{' item'});
 		case 5
 % 			nlst = {'top left corner', 'middle left', 'bottom left corner', 'top center', 'middle center', 'bottom center', 'top right corner', 'middle right', 'bottom right corner'};
 			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
-			addition = nlst{targets(idx).subcat};
-			addition = strcat({'item on the '},addition);
+			insitems{idx} = nlst{targets(idx).subcat};
+			insitems{idx} = strcat({'item on the '},insitems{idx});
 		case 6
-			addition = strcat({'item on the screen '},int2str(targets(idx).subcat));
+			insitems{idx} = strcat({'item on the screen '},int2str(targets(idx).subcat));
 	end
-	if sum(addition{1}(1) == ['a' 'e' 'i' 'o' 'u' 'F' 'H' 'I' 'N' 'O' 'R' 'S' 'X'])
-		addition = strcat({' an '}, addition);
+	if sum(insitems{idx}{1}(1) == ['a' 'e' 'i' 'o' 'u' 'A' 'E' 'F' 'H' 'I' 'M' 'N' 'O' 'R' 'S' 'X'])
+		insitems{idx} = strcat({'an '}, insitems{idx});
 	else
-		addition = strcat({' a '}, addition);
+		insitems{idx} = strcat({'a '}, insitems{idx});
 	end
-	if idx ~= dim
-		addition = strcat(addition,{', '},logickey);
-	end
-	task.instructions = strcat(task.instructions, addition);
 end
-task.instructions = strcat(task.instructions, {', please click "Present"; otherwise please click "Absent".\n'});
+inswidth = numel(task.instructions);
+if inswidth < 50
+	inswidth = 50;
+end
+for idx = 1:dim
+	dimwidth = numel(insitems{idx}{1});
+	paddings = ones(1, floor((inswidth - dimwidth)/2))*30;
+	task.instructions = strcat(task.instructions, '\n', char(paddings), insitems{idx}{1});
+end
+task.instructions = strcat(task.instructions, {'\nPlease click "Present"; otherwise please click "Absent".\n'});
 temp = task.instructions{1};
-interval = 50;
-for idx = strfind(temp, ' ')
-	if idx > interval
-		temp = strcat(temp(1:idx-1),'/',temp(idx+1:end));
-		interval = interval + 50;
-	end
-end
-temp = strrep(temp, '/', '\n');
 task.instructions = sprintf(temp);
 
 save('Task','task','targets');
