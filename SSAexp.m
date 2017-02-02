@@ -11,7 +11,7 @@ logfile = [subjNumber '_logfile'];
 save('log','logfile')
 
 numTasks = 3;
-numPractice = 2;
+numPractice = 1;
 instructions = true;
 
 screens = Screen('Screens');
@@ -65,8 +65,8 @@ mouseOverText = true;
 [expWin,rect]=PsychImaging('OpenWindow',screenNumber, bgcol);%opens onscreen window
 
 
-tasks = {'SingleTargetSearch_task.m','dualSymTaskGenerate.m'};
-trials = {'SingleTargetSearch_trials.m','SSADualSymGenerate.m'};
+tasks = {'SingleTargetSearch_task.m','dualSymTaskGenerate.m','taskGenerate'};
+trials = {'SingleTargetSearch_trials.m','SSADualSymGenerate.m','SSAGenerate'};
 
 for itask = 1:numTasks
   if itask <= numPractice
