@@ -46,9 +46,9 @@ stimVar.size.small = 30;
 stimVar.size.medium = 50;
 stimVar.size.large = 83;
 
-stimVar.orientation.left_tilt = -45;
+stimVar.orientation.left_tilted = -45;
 stimVar.orientation.upright = 0;
-stimVar.orientation.right_tilt = 45;
+stimVar.orientation.right_tilted = 45;
 
 stimVar.location.top_left = [0 0];
 stimVar.location.middle_left = [0 1];

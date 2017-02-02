@@ -65,8 +65,7 @@ mouseOverText = true;
 [expWin,rect]=PsychImaging('OpenWindow',screenNumber, bgcol);%opens onscreen window
 
 
-tasks = {'SingleTargetSearch_task.m','dualSymTaskGenerate.m'};
-trials = {'SingleTargetSearch_trials.m','SSADualSymGenerate.m'};
+tasks = {'SingleTargetSearch_Task','Dual'};
 
 for itask = 1:numTasks
   if itask <= numPractice
@@ -77,11 +76,10 @@ for itask = 1:numTasks
   taskid = randi(length(tasks));
   clear stims stimtargets stimfoils SSA stimVar
   SSAstimVar
-  run(tasks{taskid});
-  run(trials{taskid});
-
+  SSAtask
+  SSAtrials
   
-  save([subjNumber '_task' num2str(itask)])
+  save([subjNumber '_task' num2str(itask)],'stims', 'stimtargets', 'stimfoils', 'SSA', 'stimVar')
   SSAtrialrun
   
 end

@@ -1,3 +1,5 @@
+load('SSASpecs.mat');
+
 %specify grid dimensions and position
 grid.rectsize = [res.width*1/5 res.height*1/5]; %size of one grid rectangle
 grid.pos = [res.width*1/12 res.height*1/8]; %starting position of the grid (defined at top left)

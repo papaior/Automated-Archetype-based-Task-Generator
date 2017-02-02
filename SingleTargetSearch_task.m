@@ -53,6 +53,7 @@ end
 
 
 %% Print instructions
+vowels = 'aAeEiIoOuUhH';
 
 SSA.instructions = sprintf(' Look for the');
 
@@ -113,7 +114,7 @@ if ~isempty(SSA.nos)
   SSA.nos = cell2struct(SSA.nos(:,2),SSA.nos(:,1),1);
   SSA.instructions = sprintf('%s *NOT* a',SSA.instructions);
   dimensionorder = {'size','colors','orientation','shape','orientation','location','screen'};
-  vowels = 'aAeEiIoOuUhH';
+
   nosvalues = {};
   
   
