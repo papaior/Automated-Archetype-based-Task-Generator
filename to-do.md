@@ -5,9 +5,9 @@
 - [x] make large size larger
 - [x] delete comma before 'and's in instructions
 - [x] change a(n) to comply with the vowels
-- [ ] add text "click to see features"
-- [ ] add text "no target present" if giving feedback
+- [x] add text "click to see features"
+- [ ] add text "no target present" if giving feedback (I don't think we need this)
 - [x] new archetype two targets with up to four dimensions in total (big x and red y)
 - [x] split tasks/trials generation
 - [ ] figure out names for the archetypes to name the files
-- [ ] update trial-run
+- [x] update trial-run
