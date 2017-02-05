@@ -65,8 +65,8 @@ mouseOverText = true;
 [expWin,rect]=PsychImaging('OpenWindow',screenNumber, bgcol);%opens onscreen window
 
 
-tasks = {'SingleTargetSearch_task.m','dualSymTaskGenerate.m','taskGenerate'};
-trials = {'SingleTargetSearch_trials.m','SSADualSymGenerate.m','SSAGenerate'};
+tasks = {'SingleTargetSearch_task.m','MultipleTargetSearch_task.m','BinaryTargetSearch_task.m'};
+trials = {'SingleTargetSearch_trials.m','MultipleTargetSearch_trials.m','BinaryTargetSearch_trials.m'};
 
 for itask = 1:numTasks
   if itask <= numPractice

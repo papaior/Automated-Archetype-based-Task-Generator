@@ -1,10 +1,10 @@
-function SSAGenerate()
+function MultipleTargetSearch_trials()
 SSAstimVar;
 load('stimVars');
 
 numtrials = 5;
 if ~exist('Task.mat', 'file')
-	[SSA, SSATargets] = taskGenerate();
+	[SSA, SSATargets] = MultipleTargetSearch_task();
 else
 	load('Task');
 	SSA = task;

@@ -1,10 +1,10 @@
-function SSADualSymGenerate()
+function BinaryTargetSearch_trials()
 SSAstimVar;
 load('stimVars');
 
 numtrials = 5;
 if ~exist('DualSymTask.mat', 'file')
-	[SSA, SSATargets] = dualSymTaskGenerate();
+	[SSA, SSATargets] = BinaryTargetSearch_task();
 else
 	load('DualSymTask');
 	SSA = task;

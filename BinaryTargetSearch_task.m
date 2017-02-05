@@ -1,4 +1,4 @@
-function [task, targets] = dualSymTaskGenerate()
+function [task, targets] = BinaryTargetSearch_task()
 dim1 = randi(3);
 dim2 = 4 - dim1;
 logic = randi(2) - 1; % 1 for 'and', 0 for 'or'

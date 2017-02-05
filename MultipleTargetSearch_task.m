@@ -1,4 +1,4 @@
-function [task, targets] = taskGenerate()
+function [task, targets] = MultipleTargetSearch_task()
 logic = randi(2) - 1; % 1 for 'and', 0 for 'or'
 if logic
 	dim = randi(4);
@@ -38,10 +38,10 @@ end
 
 task.instructions = {'If you see'};
 if logic==0
-	nums = {' the item', ' either one of the two items', ' either one of the three items', ' either one of the four items'};
+	nums = {' the item', ' ANY of the two items', ' ANY of the three items', ' ANY of the four items'};
 	task.instructions = strcat(task.instructions, nums{dim});
 else
-	nums = {' the item', ' all of the two items', ' all of the three items', ' all of the four items'};
+	nums = {' the item', ' ALL of the two items', ' ALL of the three items', ' ALL of the four items'};
 	task.instructions = strcat(task.instructions, nums{dim});
 end
 task.instructions = strcat(task.instructions, ' listed below:');
@@ -74,16 +74,17 @@ for idx = 1:dim
 		insitems{idx} = strcat({'a '}, insitems{idx});
 	end
 end
-inswidth = numel(task.instructions);
-if inswidth < 50
-	inswidth = 50;
-end
+% inswidth = numel(task.instructions);
+% if inswidth < 50
+% 	inswidth = 50;
+% end
 for idx = 1:dim
-	dimwidth = numel(insitems{idx}{1});
-	paddings = ones(1, floor((inswidth - dimwidth)/2))*30;
+% 	dimwidth = numel(insitems{idx}{1});
+% 	paddings = ones(1, floor((inswidth - dimwidth)/2))*30;
+	paddings = ones(1, 4)*30;
 	task.instructions = strcat(task.instructions, '\n', char(paddings), insitems{idx}{1});
 end
-task.instructions = strcat(task.instructions, {'\nPlease click "Present"; otherwise please click "Absent".\n'});
+task.instructions = strcat(task.instructions, {'\nplease click "Present"; otherwise please click "Absent".\n'});
 temp = task.instructions{1};
 task.instructions = sprintf(temp);
 
