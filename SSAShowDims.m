@@ -9,6 +9,9 @@ screenNumber = max(screens);
 % screenNumber = 0;
 Screen('Preference', 'DefaultFontName', 'Helvetica' );
 
+fonts = struct2table(FontInfo('Fonts'));
+stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
+
 resAdjusted = false;
 scaleFactors = [1 1];
 
@@ -50,13 +53,47 @@ bgcol = white/2;
 grid.col = black;
 grid.bgcol = white/5;
 % grid.bgcol = white;
+highlightcol = [255 100 100];
 textcol = black;
 txtsize = round(res.height/28);
 isi = 0.500;
 iti = 1;
 
+grid.rectsize = [res.width*1/5 res.height*1/5]; %size of one grid rectangle
+grid.pos = [res.width*1/12 res.height*1/8]; %starting position of the grid (defined at top left)
+grid.border = [grid.pos grid.pos+3*grid.rectsize]; %square making outer grid border
+grid.lines = [grid.pos(1) (grid.pos(1)+3*grid.rectsize(1)) grid.pos(1) (grid.pos(1)+3*grid.rectsize(1)) (grid.pos(1)+1*grid.rectsize(1)) (grid.pos(1)+1*grid.rectsize(1)) (grid.pos(1)+2*grid.rectsize(1)) (grid.pos(1)+2*grid.rectsize(1)); ... %x coordinates (pairs of cooedinates denote the start and end of a line)
+  (grid.pos(2)+1*grid.rectsize(2)) (grid.pos(2)+1*grid.rectsize(2)) (grid.pos(2)+2*grid.rectsize(2)) (grid.pos(2)+2*grid.rectsize(2)) grid.pos(2) (grid.pos(2)+3*grid.rectsize(2)) grid.pos(2) (grid.pos(2)+3*grid.rectsize(2))]; %y coordinates
+grid.linewidth = 5;
+
+sp.rectsize = [res.width*1/8 res.height*1/11]; %button size
+sp.pos = [res.width*1/5 grid.border(4)+ grid.rectsize(2)/2;...
+  res.width*4/5-sp.rectsize(1) grid.border(4)+ grid.rectsize(2)/2]; %starting positions for the two buttons
+sp.col = white/1.8*[1.2 1.2 1];
+sp.framecol = white/1.5;
+sp.textcol = black;
+sp.textsize = round(res.height/30);
+sp.linewidth = 2;
+
+sp.button1 = [sp.pos(1,:) sp.pos(1,:)+sp.rectsize];
+sp.button2 = [sp.pos(2,:) sp.pos(2,:)+sp.rectsize];
+
 PsychImaging('PrepareConfiguration');
 [expWin,rect]=PsychImaging('OpenWindow',screenNumber, grid.bgcol);
+
+gridscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);
+Screen('FillRect',gridscreen,grid.bgcol,grid.border);
+Screen('FrameRect',gridscreen,grid.col,grid.border,grid.linewidth);
+Screen('DrawLines',gridscreen,grid.lines,grid.linewidth,grid.col);
+Screen('FillRect',gridscreen,sp.col,sp.button1);
+Screen('FrameRect',gridscreen,sp.framecol,sp.button1,sp.linewidth);
+Screen('TextSize',gridscreen,sp.textsize);
+DrawFormattedText(gridscreen,'Prev','center','center',sp.textcol,[],[],[],[],[],sp.button1);
+Screen('FillRect',gridscreen,sp.col,sp.button2);
+Screen('FrameRect',gridscreen,sp.framecol,sp.button2,sp.linewidth);
+Screen('TextSize',gridscreen,sp.textsize);
+DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],[],sp.button2);
+
 
 %% show all the dimensions
 dimnames = fieldnames(stimVar);
@@ -67,23 +104,23 @@ defsymbol.orientation = stimVar.orientation.upright;
 sym_per_row = 6;
 
 for idx = 1:4
-	Screen('TextSize', expWin, 20*scaleFactors(2));
+	Screen('TextSize', expWin, 20);
 	message = strcat({'Showing all possible '},dimnames(idx));
 	if message{1}(end)~='s'
 		message = strcat(message,'s');
 	end
 	message = message{1};
-	DrawFormattedText(expWin, message, 'center', 35*scaleFactors(2), white);
-	DrawFormattedText(expWin, 'Click anywhere to continue.', 'center', 'center', white,[],[],[],[],[],[0,res.height-50*scaleFactors(2),res.width,res.height]);
+	DrawFormattedText(expWin, message, 'center', 35, white);
+	DrawFormattedText(expWin, 'Click anywhere to continue.', 'center', 'center', white,[],[],[],[],[],[0,res.height-50,res.width,res.height]);
 	letterscreen = Screen('OpenOffscreenWindow', screenNumber, grid.bgcol, rect);
-    Screen('TextFont',letterscreen,'Subfont');
+    Screen('TextFont',letterscreen,stimfontnum);
 
 	symbols = fieldnames(stimVar.(dimnames{idx}));
 	numsymbols = numel(symbols);
 	numrows = floor(numsymbols/sym_per_row)+ (mod(numsymbols,sym_per_row)>0);
-	heightS = round((res.height-100*scaleFactors(2))/numrows);
-	widthS = (res.width - 150*scaleFactors(1))/sym_per_row;
-	ystart = 50*scaleFactors(2);
+	heightS = round((res.height-100)/numrows);
+	widthS = (res.width - 150)/sym_per_row;
+	ystart = 50;
 
 	for hd = 1:numrows
 		if hd == numrows
@@ -94,23 +131,68 @@ for idx = 1:4
 		else
 			symthisrow = sym_per_row;
 		end
-		xoffset = 75*scaleFactors(1) + floor((sym_per_row-symthisrow)*widthS/2);
+		xoffset = 75 + floor((sym_per_row-symthisrow)*widthS/2);
 		for wd = 1:symthisrow
 			currsym = defsymbol;
 			currsym.(dimnames{idx}) = stimVar.(dimnames{idx}).(symbols{(hd-1)*sym_per_row+wd});
 			% Screen('FramePoly', expWin, black, [xoffset,ystart;xoffset,ystart+heightS;xoffset+widthS,ystart+heightS;xoffset+widthS,ystart]);
 			letterrect = [xoffset,ystart,xoffset+widthS,ystart+heightS];
-			Screen('TextSize',letterscreen,floor(currsym.size*scaleFactors(2)));
+			Screen('TextSize',letterscreen,currsym.size);
 			[x,y,letterrect] = DrawFormattedText(letterscreen,currsym.shape,'center','center',currsym.colors,[],[],[],[],[],letterrect);
 			Screen('DrawTexture', expWin, letterscreen, letterrect, letterrect, currsym.orientation);
 % 			if ~ strcmp(dimnames{idx},'shape')
-				DrawFormattedText(expWin,symbols{(hd-1)*sym_per_row+wd},'center','center',white,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+floor(50*scaleFactors(2))]);
+				DrawFormattedText(expWin,symbols{(hd-1)*sym_per_row+wd},'center','center',white,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+50]);
 % 			end
 			xoffset = xoffset+widthS;
 		end
 		ystart = ystart + heightS;
 	end
 	Screen('Flip', expWin);
+	clicked = 0;
+	while ~clicked
+		[x,y,clicked] = GetMouse(screenNumber);
+		clicked = sum(clicked);
+	end
+	WaitSecs(isi);
+end
+
+for idx = 5:6
+	Screen('DrawTexture', expWin, gridscreen);
+	if idx == 5
+		message = 'This is is an experiment window, please review all possible locations:';
+	else
+		message = 'You can see which screen you are currently viewing below in the experiment:';
+	end
+	DrawFormattedText(expWin, message, 'center', 35, white);
+	if idx == 5
+		DrawFormattedText(expWin, 'Click anywhere to continue.', 'center', 'center', white,[],[],[],[],[],[0,res.height-50,res.width,res.height]);
+	else
+		DrawFormattedText(expWin, 'Click anywhere to finish.', 'center', 'center', white,[],[],[],[],[],[0,res.height-50,res.width,res.height]);
+	end
+	letterscreen = Screen('OpenOffscreenWindow', screenNumber, grid.bgcol, rect);
+    Screen('TextFont',letterscreen,stimfontnum);
+
+	symbols = fieldnames(stimVar.location);
+	for loc = 1:numel(symbols)
+		gridrect = [grid.pos+grid.rectsize.*stimVar.location.(symbols{loc}) grid.pos+grid.rectsize.*(stimVar.location.(symbols{loc})+[1 1])]; %determines the location of the gridsquare that we need to put the stim in,
+		Screen('TextSize',letterscreen,defsymbol.size);
+		[letterx, lettery, letterrect] = DrawFormattedText(letterscreen, defsymbol.shape,'center','center',defsymbol.colors,[],[],[],[],[],gridrect);
+		Screen('DrawTexture', expWin, letterscreen, letterrect, letterrect, defsymbol.orientation);
+		if idx == 5
+			DrawFormattedText(expWin,symbols{loc},'center','center',white,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+50]);
+		end
+		% Screen('DrawTexture',expWin,letterscreen,letterrect,gridrect,defsymbol.orientation);
+		% rscreen = Screen('OpenOffscreenWindow',screenNumber,grid.bgcol,rect); %reset letterscreen
+	end
+	
+	if idx == 6
+		Screen('TextStyle',expWin,0);
+		Screen('TextSize',expWin,round(txtsize*1.2));
+		[tx, ty, bounds] = DrawFormattedText(expWin,'Screen 1','center','center',textcol,[],[],[],[],[],[0 (grid.border(4)+ grid.rectsize(2)/2) res.width (grid.border(4)+grid.rectsize(2)/2+sp.rectsize(2))]);
+		Screen('FrameRect', expWin, highlightcol, bounds + [-7 -7 7 7], 3);
+	end
+	Screen('Flip', expWin);
+
 	clicked = 0;
 	while ~clicked
 		[x,y,clicked] = GetMouse(screenNumber);
