@@ -116,7 +116,7 @@ while trial <= size(stims,1)
   elseif trial ~= numtrials
     Screen('DrawTexture',expWin,buttonsscreen)
     Screen('TextSize',expWin,txtsize);
-    DrawFormattedText(expWin,sprintf('%s\n\n\n(Click anywhere to continue)',SSA.instructions),'center','center',textcol,[],[],[],[],[],grid.border); %prints instructions
+    DrawFormattedText(expWin,sprintf('%s\n\n\n(Click anywhere to continue)',SSA.instructions),'100,'center',textcol,[],[],[],[],[],grid.border); %prints instructions
     Screen('Flip',expWin);%this command presents the screen that was set up before (i.e. the instructions)
   else
     Screen('DrawTexture',expWin,buttonsscreen)
