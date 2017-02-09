@@ -10,8 +10,8 @@ answer = inputdlg(prompt, 'Experimental setup information',1,def);
 logfile = [subjNumber '_logfile'];
 save('log','logfile')
 
-numTasks = 3;
-numPractice = 1;
+numTasks = 10;
+numPractice = 0;
 instructions = true;
 
 screens = Screen('Screens');
@@ -79,6 +79,7 @@ for itask = 1:numTasks
   SSAstimVar
   run(tasks{taskid});
   run(trials{taskid});
+  WaitSecs(1);
 
   
   save([subjNumber '_task' num2str(itask)])

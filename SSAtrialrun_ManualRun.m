@@ -90,7 +90,7 @@ if SSA.presence %if the response is present/absent, we need 2 buttons
   numbuttons = 2;
   
 else
-  reportdims = fieldnames(SSA.report);sca
+  reportdims = fieldnames(SSA.report);
   
   numbuttons = 2*length(reportdims);
   for ith = 1:numbuttons

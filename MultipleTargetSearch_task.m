@@ -83,8 +83,8 @@ end
 for idx = 1:dim
 % 	dimwidth = numel(insitems{idx}{1});
 % 	paddings = ones(1, floor((inswidth - dimwidth)/2))*30;
-	paddings = ones(1, 4)*30;
-	task.instructions = strcat(task.instructions, '\n', char(paddings), strrep(insitems{idx}{1}, '_', ' '));
+% 	paddings = ones(1, 2)*30;
+	task.instructions = strcat(task.instructions, '\n\t\t', strrep(insitems{idx}{1}, '_', ' '));
 end
 task.instructions = strcat(task.instructions, {'\nplease click "Present"; otherwise please click "Absent".\n'});
 temp = task.instructions{1};

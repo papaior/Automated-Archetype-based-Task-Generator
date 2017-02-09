@@ -31,21 +31,22 @@ else
 	dim1 = 1;
 	dim2 = 2;
 end
-while sum(targets(dim1).subcat == targets(dim2).subcat) == nnz(targets(dim1).subcat)
+while sum(targets(dim1).subcat == targets(dim2).subcat) & (targets(dim1).subcat | targets(dim2).subcat) == nnz(targets(dim1).subcat)
 	idx = randsample(targets(dim1).category, 1);
 	targets(dim1).subcat(idx) = randi(fsegs(idx));
 end
 
-task.instructions = {'If there'};
+task.instructions = {'If you see'};
 if logic==0
-	task.instructions = strcat(task.instructions, ' is one and only one of');
+	task.instructions = strcat(task.instructions, ' ANY');
 else
-	task.instructions = strcat(task.instructions, ' is both');
+	task.instructions = strcat(task.instructions, ' BOTH');
 end
-logickey = {'or', 'and'};
-logickey = logickey(logic+1);
+task.instructions = strcat(task.instructions, ' of the two items listed below:');
+insitems = cell(2, 1);
 for idx = 1:2
-	addition = '';
+	insitems{idx} = {''};
+    addition = '';
 	for idim = [3 4 1 2]
 		if targets(idx).subcat(idim) ~= 0
 			nlst = fieldnames(stimVar.(varlist{idim}));
@@ -67,23 +68,15 @@ for idx = 1:2
 		addition = strcat({' an'}, addition);
 	else
 		addition = strcat({' a'}, addition);
-	end
-	if idx ~= 2
-		addition = strcat(addition,{', '},logickey);
-	end
-	task.instructions = strcat(task.instructions, addition);
+    end
+	insitems{idx} = addition;
 end
-task.instructions = strcat(task.instructions, {', please click "Present"; otherwise please click "Absent".\n'});
+for idx = 1:2
+    task.instructions = strcat(task.instructions, '\n\t\t', strrep(insitems{idx}{1}, '_', ' '));
+end
+task.instructions = strcat(task.instructions, {'\nplease click "Present"; otherwise please click "Absent".\n'});
 temp = task.instructions{1};
-temp = strrep(temp, '_', ' ');
-interval = 50;
-for idx = strfind(temp, ' ')
-	if idx > interval
-		temp = strcat(temp(1:idx-1),'/',temp(idx+1:end));
-		interval = interval + 50;
-	end
-end
-temp = strrep(temp, '/', '\n');
+
 task.instructions = sprintf(temp);
 
 save('DualSymTask','task','targets');

@@ -7,11 +7,11 @@ load('stimVars.mat');
 screens = Screen('Screens');
 screenNumber = max(screens);
 % screenNumber = 0;
-Screen('Preference', 'DefaultFontName', 'Helvetica' );
+Screen('Preference', 'DefaultFontName', 'Calibri' );
 
-% fonts = struct2table(FontInfo('Fonts'));
-% stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
-stimfontnum = 1;
+fonts = struct2table(FontInfo('Fonts'));
+stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
+% stimfontnum = 1;
 
 resAdjusted = false;
 scaleFactors = [1 1];
@@ -204,7 +204,7 @@ for idx = 5:6
 	Screen('TextSize',expWin,round(txtsize*1.2));
 	[tx, ty, bounds] = DrawFormattedText(expWin,sprintf('Screen %d',idx-4),'center','center',textcol,[],[],[],[],[],[0 (grid.border(4)+ grid.rectsize(2)/2) res.width (grid.border(4)+grid.rectsize(2)/2+sp.rectsize(2))]);
 	if idx == 6
-		Screen('FrameRect', expWin, highlightcol, bounds + [-10 -10 10 10], 5);
+		Screen('FrameRect', expWin, highlightcol, bounds + [-20 -15 20 15], 7);
 	end
 	for ith = 1:length(buttons.label)
 		Screen('FillRect',expWin,buttons.col,buttons.loc(ith,:));% Same process as above, done for every button

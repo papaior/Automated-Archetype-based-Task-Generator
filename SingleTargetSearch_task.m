@@ -55,7 +55,7 @@ end
 %% Print instructions
 vowels = 'aAeEiIoOuUhH';
 
-SSA.instructions = sprintf('You''re looking for the item that has the folowing features:\n');
+SSA.instructions = sprintf('You''re looking for a single item that has the folowing features:\n');
 if ~isempty(SSA.yess)
   SSA.yess = cell2struct(SSA.yess(:,2),SSA.yess(:,1),1);
   fields = fieldnames(stimVar);
