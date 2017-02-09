@@ -9,8 +9,9 @@ screenNumber = max(screens);
 % screenNumber = 0;
 Screen('Preference', 'DefaultFontName', 'Helvetica' );
 
-fonts = struct2table(FontInfo('Fonts'));
-stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
+% fonts = struct2table(FontInfo('Fonts'));
+% stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
+stimfontnum = 1;
 
 resAdjusted = false;
 scaleFactors = [1 1];
@@ -141,7 +142,7 @@ for idx = 1:4
 			[x,y,letterrect] = DrawFormattedText(letterscreen,currsym.shape,'center','center',currsym.colors,[],[],[],[],[],letterrect);
 			Screen('DrawTexture', expWin, letterscreen, letterrect, letterrect, currsym.orientation);
 % 			if ~ strcmp(dimnames{idx},'shape')
-				DrawFormattedText(expWin,symbols{(hd-1)*sym_per_row+wd},'center','center',white,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+50]);
+				DrawFormattedText(expWin,strrep(symbols{(hd-1)*sym_per_row+wd}, '_', ' '),'center','center',white,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+50]);
 % 			end
 			xoffset = xoffset+widthS;
 		end
@@ -156,12 +157,26 @@ for idx = 1:4
 	WaitSecs(isi);
 end
 
+buttons.col = white/1.8*[1 1 1.7];
+buttons.framecol = white/1.5;
+buttons.textcol = black;
+buttons.textsize = round(res.height/40);
+buttons.linewidth = 2;
+rb.area = [grid.border(3)+(res.width-grid.border(3))/10 grid.border(2) res.width-(res.width-grid.border(3))/10 grid.border(4)]; %defines area where buttons can be placed. It corresponds to the area directly to the left of the grid, with a 10% margin at left and right
+rb.width = rb.area(3)-rb.area(1); %the width of rb.area
+rb.height = rb.area(4)-rb.area(2); %the height
+buttons.loc(1,:) = [(rb.area(1)+rb.width*1/3) (rb.area(2)+rb.height*1/5) (rb.area(1)+rb.width*2/3)  (rb.area(2)+rb.height*2/5)];
+buttons.label(1) = {'Present'};
+buttons.loc(2,:) = [(rb.area(1)+rb.width*1/3) (rb.area(2)+rb.height*3/5) (rb.area(1)+rb.width*2/3)  (rb.area(2)+rb.height*4/5)];
+buttons.label(2) = {'Absent'};
+
 for idx = 5:6
+	Screen('TextSize', expWin, 20);
 	Screen('DrawTexture', expWin, gridscreen);
 	if idx == 5
 		message = 'This is is an experiment window, please review all possible locations:';
 	else
-		message = 'You can see which screen you are currently viewing below in the experiment:';
+		message = 'You can see which screen you are currently viewing below in the experiment.\nYou can also cycle through the trials by clicking the Prev and Next buttons in the experiment.';
 	end
 	DrawFormattedText(expWin, message, 'center', 35, white);
 	if idx == 5
@@ -179,18 +194,25 @@ for idx = 5:6
 		[letterx, lettery, letterrect] = DrawFormattedText(letterscreen, defsymbol.shape,'center','center',defsymbol.colors,[],[],[],[],[],gridrect);
 		Screen('DrawTexture', expWin, letterscreen, letterrect, letterrect, defsymbol.orientation);
 		if idx == 5
-			DrawFormattedText(expWin,symbols{loc},'center','center',white,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+50]);
+			DrawFormattedText(expWin,strrep(symbols{loc}, '_', ' '),'center','center',white,[],[],[],[],[],[letterrect(1), letterrect(4),letterrect(3),letterrect(4)+50]);
 		end
 		% Screen('DrawTexture',expWin,letterscreen,letterrect,gridrect,defsymbol.orientation);
 		% rscreen = Screen('OpenOffscreenWindow',screenNumber,grid.bgcol,rect); %reset letterscreen
 	end
 	
+	Screen('TextStyle',expWin,0);
+	Screen('TextSize',expWin,round(txtsize*1.2));
+	[tx, ty, bounds] = DrawFormattedText(expWin,sprintf('Screen %d',idx-4),'center','center',textcol,[],[],[],[],[],[0 (grid.border(4)+ grid.rectsize(2)/2) res.width (grid.border(4)+grid.rectsize(2)/2+sp.rectsize(2))]);
 	if idx == 6
-		Screen('TextStyle',expWin,0);
-		Screen('TextSize',expWin,round(txtsize*1.2));
-		[tx, ty, bounds] = DrawFormattedText(expWin,'Screen 1','center','center',textcol,[],[],[],[],[],[0 (grid.border(4)+ grid.rectsize(2)/2) res.width (grid.border(4)+grid.rectsize(2)/2+sp.rectsize(2))]);
-		Screen('FrameRect', expWin, highlightcol, bounds + [-7 -7 7 7], 3);
+		Screen('FrameRect', expWin, highlightcol, bounds + [-10 -10 10 10], 5);
 	end
+	for ith = 1:length(buttons.label)
+		Screen('FillRect',expWin,buttons.col,buttons.loc(ith,:));% Same process as above, done for every button
+		Screen('FrameRect',expWin,buttons.framecol,buttons.loc(ith,:),buttons.linewidth);
+		Screen('TextSize',expWin,buttons.textsize);
+		DrawFormattedText(expWin, buttons.label{ith} ,'center','center',sp.textcol,[],[],[],[],[],buttons.loc(ith,:  ));
+	end
+	
 	Screen('Flip', expWin);
 
 	clicked = 0;

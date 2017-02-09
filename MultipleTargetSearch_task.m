@@ -66,7 +66,9 @@ for idx = 1:dim
 			insitems{idx} = nlst{targets(idx).subcat};
 			insitems{idx} = strcat({'item on the '},insitems{idx});
 		case 6
-			insitems{idx} = strcat({'item on the screen '},int2str(targets(idx).subcat));
+			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
+			insitems{idx} = nlst{targets(idx).subcat};
+			insitems{idx} = strcat({'item on '},insitems{idx});
 	end
 	if sum(insitems{idx}{1}(1) == ['a' 'e' 'i' 'o' 'u' 'A' 'E' 'F' 'H' 'I' 'M' 'N' 'O' 'R' 'S' 'X'])
 		insitems{idx} = strcat({'an '}, insitems{idx});
@@ -82,7 +84,7 @@ for idx = 1:dim
 % 	dimwidth = numel(insitems{idx}{1});
 % 	paddings = ones(1, floor((inswidth - dimwidth)/2))*30;
 	paddings = ones(1, 4)*30;
-	task.instructions = strcat(task.instructions, '\n', char(paddings), insitems{idx}{1});
+	task.instructions = strcat(task.instructions, '\n', char(paddings), strrep(insitems{idx}{1}, '_', ' '));
 end
 task.instructions = strcat(task.instructions, {'\nplease click "Present"; otherwise please click "Absent".\n'});
 temp = task.instructions{1};
