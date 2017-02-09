@@ -1,4 +1,4 @@
 *.mat
-ManualRun_logfile
+*logfile
 
 .DS_Store
