@@ -17,10 +17,7 @@ for idx = 1:6
 	fsegs(idx) = numel(fieldnames(stimVar.(varlist{idx})));
 	fields = fields + fsegs(idx);
 end
-temp = randi(fields,dim,1);
-while numel(unique(temp)) ~= numel(temp)
-	temp = randi(fields,dim,1);
-end
+temp = randsample(fields,dim,false);
 temp = sort(temp);
 % insseq = [3,1,4,2,5,6];
 for idx = 1:dim
@@ -64,7 +61,7 @@ for idx = 1:dim
 % 			nlst = {'top left corner', 'middle left', 'bottom left corner', 'top center', 'middle center', 'bottom center', 'top right corner', 'middle right', 'bottom right corner'};
 			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
 			insitems{idx} = nlst{targets(idx).subcat};
-			insitems{idx} = strcat({'item on the '},insitems{idx});
+			insitems{idx} = strcat({'item in the '},insitems{idx});
 		case 6
 			nlst = fieldnames(stimVar.(varlist{targets(idx).category}));
 			insitems{idx} = nlst{targets(idx).subcat};
