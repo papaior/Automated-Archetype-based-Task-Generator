@@ -76,7 +76,7 @@ for trial = 1:numtrials
 	for idim = togen
 		screen = randi(9);
 		location = randi(9);
-		while selected(screen,location) ~= false || stims(trial,screen,location).discard == true;
+		while selected(screen,location) ~= false || stims(trial,screen,location).discard == true
 			screen = randi(9);
 			location = randi(9);
 		end

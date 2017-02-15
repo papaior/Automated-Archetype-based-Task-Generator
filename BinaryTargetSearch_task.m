@@ -24,15 +24,19 @@ for idx = 1:2
 	end
 end
 
-if dim1>dim2
+if task.dimension(1)>task.dimension(2)
 	dim1 = 2;
 	dim2 = 1;
 else
 	dim1 = 1;
 	dim2 = 2;
 end
-while sum(targets(dim1).subcat == targets(dim2).subcat) & (targets(dim1).subcat | targets(dim2).subcat) == nnz(targets(dim1).subcat)
-	idx = randsample(targets(dim1).category, 1);
+while sum( (targets(dim1).subcat == targets(dim2).subcat) & (targets(dim1).subcat | targets(dim2).subcat) ) == nnz(targets(dim1).subcat)
+	if task.dimension(dim1) == 1
+		idx = sum(targets(dim1).category);
+	else
+		idx = randsample(targets(dim1).category, 1);
+	end
 	targets(dim1).subcat(idx) = randi(fsegs(idx));
 end
 
@@ -58,7 +62,7 @@ for idx = 1:2
 	end
 	if targets(idx).subcat(5) ~= 0
 		nlst = fieldnames(stimVar.(varlist{5}));
-		addition = strcat(addition,{' on the '},nlst{targets(idx).subcat(5)});
+		addition = strcat(addition,{' in the '},nlst{targets(idx).subcat(5)});
 	end
 	if targets(idx).subcat(6) ~= 0
 		nlst = fieldnames(stimVar.(varlist{6}));
@@ -68,7 +72,7 @@ for idx = 1:2
 		addition = strcat({' an'}, addition);
 	else
 		addition = strcat({' a'}, addition);
-    end
+  end
 	insitems{idx} = addition;
 end
 for idx = 1:2
