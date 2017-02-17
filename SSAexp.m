@@ -10,8 +10,8 @@ answer = inputdlg(prompt, 'Experimental setup information',1,def);
 logfile = [subjNumber '_logfile'];
 save('log','logfile')
 
-numTasks = 10;
-numPractice = 0;
+numTasks = 40;
+numPractice = 1;
 instructions = true;
 
 screens = Screen('Screens');
