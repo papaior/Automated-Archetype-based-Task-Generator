@@ -176,7 +176,7 @@ for idx = 5:6
 	if idx == 5
 		message = 'This is is an experiment window, please review all possible locations:';
 	else
-		message = 'You can see which screen you are currently viewing below in the experiment.\nYou can also cycle through the trials by clicking the Prev and Next buttons in the experiment.';
+		message = 'You can see the current screen number below in the experiment.\nYou can also cycle through the screens by clicking the Prev and Next buttons in the experiment.';
 	end
 	DrawFormattedText(expWin, message, 'center', 35, white);
 	if idx == 5
