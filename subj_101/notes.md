@@ -1,8 +1,8 @@
 Instructions: add "we are showing the combinations of color shape …"
 
-add there are 9 screens
+add "there are 9 screens"
 
-add targets don’t have to be on the same screen
+add "targets don’t have to be on the same screen"
 
 dimension screen number is ambiguous
 
