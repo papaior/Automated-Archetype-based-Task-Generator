@@ -134,11 +134,11 @@ end
 function pdims = MSMatchedDims(targets, genvec)
 	pdims = 0;
 	for idx = 1:2
-		mask = targets(idx).subcat(1:4) & [1 1 1 1];
-		if sum(mask) == 0
+		mask = targets(idx).subcat & ones(1,6);
+		if sum(mask(1:4)) == 0
 			continue;
 		end
-		if sum((targets(idx).subcat(1:4) == genvec(1:4)) == mask) == 4
+		if sum((targets(idx).subcat == genvec) == mask) == 6
 			pdims = pdims+1;
 		end
 	end

@@ -1,6 +1,7 @@
 function [task, targets] = BinaryTargetSearch_task()
-dim1 = randi(3);
-dim2 = 4 - dim1;
+total_dims = randi(2) + 2;
+dim1 = randi(total_dims-1);
+dim2 = total_dims - dim1;
 logic = randi(2) - 1; % 1 for 'and', 0 for 'or'
 task.presence = 1;
 task.report = {};
@@ -68,7 +69,7 @@ for idx = 1:2
 		nlst = fieldnames(stimVar.(varlist{6}));
 		addition = strcat(addition,{' on '},nlst{targets(idx).subcat(6)});
 	end
-	if sum(addition{1}(2) == ['a' 'e' 'i' 'o' 'u' 'F' 'H' 'I' 'N' 'O' 'R' 'S' 'X'])
+	if sum(addition{1}(2) == ['a' 'e' 'i' 'o' 'u' 'A' 'E' 'F' 'H' 'I' 'M' 'N' 'O' 'R' 'S' 'X'])
 		addition = strcat({' an'}, addition);
 	else
 		addition = strcat({' a'}, addition);

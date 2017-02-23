@@ -67,6 +67,9 @@ for trial = 1:numtrials
 	if strcmp(stimtargets(1,trial).correct,'Present')
 		selected = zeros(9);
 		if SSA.logic == true
+			if targetsvec(5) && targetsvec(6)
+				selected(targetsvec(6), targetsvec(5)) = true;
+			end
 			for dimx=numel(SSATargets):-1:1
 				screen = randi(9);
 				location = randi(9);

@@ -1,10 +1,6 @@
 function [task, targets] = MultipleTargetSearch_task()
 logic = randi(2) - 1; % 1 for 'and', 0 for 'or'
-if logic
-	dim = randi(4);
-else
-	dim = randi(3) + 1;
-end
+dim = randi(3) + 1;
 task.presence = 1;
 task.report = {};
 task.dimension = dim;
