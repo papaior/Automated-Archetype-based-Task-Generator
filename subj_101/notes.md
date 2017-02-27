@@ -12,19 +12,19 @@ correct number of trials at feedback might be wrong
 
 ~~multiple dim target (screen 7 & top center)~~
 
-BOTH condition partial condition generation should be 50%
+~~BOTH condition partial condition generation should be higher (50% is unattainable)~~
 
 report items feature trials: generated target does not match all the dimensions given
 
-counterbalance the archetypes in the pilot phase
+~~counterbalance the archetypes in the pilot phase~~
 
-remove underscore in the buttons
+~~remove underscore in the buttons~~
 
-“report **whether** the item is …”
+~~“report **whether** the item is …”~~
 
 feedback location and screen number
 
-typo: following
+~~typo: following~~
 
 add button counters
 
@@ -34,7 +34,7 @@ add button counters
 
 ~~multiple: at least 2 dims~~
 
-add breaks per 10 tasks
+~~add breaks per 10 tasks~~
 
 look at task 22
 
@@ -48,8 +48,8 @@ Orange might be too similar to red and yellow
 
 look at task 29, 30, 34, 35, 39
 
-fix orientation in stimulus description
+~~fix orientation in stimulus description~~
 
-40 trials too long? maybe 30
+~~40 trials too long? maybe 30~~
 
 looks like something's wrong with the data mats, not all has SSA (24, 26)

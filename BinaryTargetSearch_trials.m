@@ -67,7 +67,8 @@ for trial = 1:numtrials
 		end
 	else
 		if SSA.logic == true
-			togen = randsample([1 2], randi(2)-1);
+			num_gen = datasample([0 1], 1, 'Weights', [1/3 2/3]);
+			togen = randsample([1 2], num_gen);
 		else
 			togen = [];
 		end

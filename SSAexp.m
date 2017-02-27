@@ -10,7 +10,8 @@ answer = inputdlg(prompt, 'Experimental setup information',1,def);
 logfile = [subjNumber '_logfile'];
 save('log','logfile')
 
-numTasks = 40;
+numTasks = 30;
+numBlock = 10;
 numPractice = 1;
 instructions = true;
 
@@ -68,13 +69,39 @@ mouseOverText = true;
 tasks = {'SingleTargetSearch_task.m','MultipleTargetSearch_task.m','BinaryTargetSearch_task.m'};
 trials = {'SingleTargetSearch_trials.m','MultipleTargetSearch_trials.m','BinaryTargetSearch_trials.m'};
 
+taskSeq = zeros(1,numTasks);
+taskSeqp = 1;
+for idx = 1:numel(tasks)
+	ntask = floor(numTasks/numel(tasks));
+	if idx < mod(numTasks, numel(tasks))
+		ntask = ntask +1;
+	end
+	taskSeq(taskSeqp:taskSeqp+ntask-1) = idx;
+	taskSeqp = taskSeqp + ntask;
+end
+taskSeq = taskSeq(randperm(numTasks));
+taskSeq = taskSeq(randperm(numTasks));
+taskSeq = taskSeq(randperm(numTasks)); % for better randomness
+
 for itask = 1:numTasks
   if itask <= numPractice
     givefeedback = true;
   else
     givefeedback = false;
-  end
-  taskid = randi(length(tasks));
+	end
+	if mod(itask, numBlock) == 0 && itask~=numTasks
+		Screen('TextSize',expWin,txtsize);
+		DrawFormattedText(expWin, 'You can take a break now.\nClick anywhere to continue the experiment.', 'center', 'center');
+		Screen('Flip', expWin);
+		
+		mouse = 0;
+		while mouse == 0
+			[mousex,mousey,mouseb] = GetMouse(screenNumber);
+			mouse = sum(mouseb);
+		end
+	end
+%   taskid = randi(length(tasks));
+	taskid = taskSeq(itask);
   clear stims stimtargets stimfoils SSA stimVar
   SSAstimVar
   run(tasks{taskid});

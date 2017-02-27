@@ -55,7 +55,7 @@ end
 %% Print instructions
 vowels = 'aAeEiIoOuUhH';
 
-SSA.instructions = sprintf('You''re looking for a single item that has the folowing features:\n');
+SSA.instructions = sprintf('You''re looking for a single item that has the following features:\n');
 if ~isempty(SSA.yess)
   SSA.yess = cell2struct(SSA.yess(:,2),SSA.yess(:,1),1);
   fields = fieldnames(stimVar);
@@ -217,7 +217,7 @@ end
 % SSA.instructions = sprintf('%s\n',SSA.instructions);
 
 if SSA.presence
-  SSA.instructions = sprintf('%sReport if the target was present or not.\n',SSA.instructions);
+  SSA.instructions = sprintf('%sReport whether the target was present or not.\n',SSA.instructions);
 else
     SSA.instructions = sprintf('%sReport if the target is', SSA.instructions);
     if isfield(SSA.report,'colors')

@@ -110,7 +110,8 @@ else
       case 'diamond'
         buttons.label{ith} = '$';
     end
-  end
+	end
+	buttons.label = strrep(buttons.label, '_', ' ');
 end
 
 %open onscreen and offscreen windows
@@ -270,12 +271,7 @@ while trial <= size(stims,1)
                 end
               end
               
-              mouseOverString = sprintf('%s, %s %s, with a',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.shape); %create string
-              if strcmp(mouseOverValues.orientation,'upright')
-                 mouseOverString = sprintf('%sn %s orientation',mouseOverString, mouseOverValues.orientation);
-              else
-                mouseOverString = sprintf('%s %s',mouseOverString, mouseOverValues.orientation);
-              end
+              mouseOverString = sprintf('%s, %s %s %s',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape); %create string
               mouseOverString = strrep(mouseOverString,'_',' ');
               
               Screen('DrawTexture',mOScreen,testscreen);%copy testscreen to mO screen
