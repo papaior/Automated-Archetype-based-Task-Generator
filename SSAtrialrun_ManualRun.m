@@ -271,7 +271,7 @@ while trial <= size(stims,1)
                 end
               end
               
-              mouseOverString = sprintf('%s, %s %s %s',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape); %create string
+              mouseOverString = sprintf('%s, %s, %s %s',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape); %create string
               mouseOverString = strrep(mouseOverString,'_',' ');
               
               Screen('DrawTexture',mOScreen,testscreen);%copy testscreen to mO screen

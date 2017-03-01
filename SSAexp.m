@@ -88,25 +88,27 @@ for itask = 1:numTasks
     givefeedback = true;
   else
     givefeedback = false;
-	end
-	if mod(itask, numBlock) == 0 && itask~=numTasks
-		Screen('TextSize',expWin,txtsize);
-		DrawFormattedText(expWin, 'You can take a break now.\nClick anywhere to continue the experiment.', 'center', 'center');
-		Screen('Flip', expWin);
-		
-		mouse = 0;
-		while mouse == 0
-			[mousex,mousey,mouseb] = GetMouse(screenNumber);
-			mouse = sum(mouseb);
-		end
-	end
+  end
+	
 %   taskid = randi(length(tasks));
-	taskid = taskSeq(itask);
+  taskid = taskSeq(itask);
   clear stims stimtargets stimfoils SSA stimVar
   SSAstimVar
   run(tasks{taskid});
   run(trials{taskid});
   WaitSecs(1);
+  if mod(itask, numBlock) == 0 && itask~=numTasks
+    Screen('TextSize',expWin,txtsize);
+    DrawFormattedText(expWin, 'You can take a break now.\nClick anywhere to continue the experiment.', 'center', 'center');
+    Screen('Flip', expWin);
+
+    mouse = 0;
+    while mouse == 0
+        [mousex,mousey,mouseb] = GetMouse(screenNumber);
+        mouse = sum(mouseb);
+    end
+    WaitSecs(isi);
+   end
 
   
   save([subjNumber '_task' num2str(itask)])
