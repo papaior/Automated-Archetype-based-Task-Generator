@@ -142,6 +142,11 @@ while trial <= size(stims,1)
   while screen <= size(stims,2)
     Screen('DrawTexture',testscreen,blank); %reset testscreen screen to blank
     Screen('DrawTexture',testscreen,gridscreen); %copy the texture from gridscreen (i.e. grid plus all the buttons)
+    if screen ==1 %hiding buttons for start and end
+      Screen('FillRect',testscreen,bgcol,sp.button1.*[0.9,0.9,1.1,1.1]);
+    elseif screen == size(stims,2)
+      Screen('FillRect',testscreen,bgcol,sp.button2.*[0.9,0.9,1.1,1.1]);
+    end
     
     if replay %if a replay highlights targets
       targs = screen == stimtargets(trial).screenno; %find which targets are on this screen

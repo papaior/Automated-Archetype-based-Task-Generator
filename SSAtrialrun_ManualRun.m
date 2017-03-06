@@ -42,7 +42,7 @@ grid.bgcol = [1 1 1]*white/4;
 highlightcol = [255 100 100];
 textcol = [1 1 1]*black;
 txtsize = round(res.height/28);
-isi = 0.500;
+isi = 0.100;
 iti = 1;
 filename = logfile;
 
@@ -177,6 +177,9 @@ while trial <= size(stims,1)
     Screen('Flip',expWin);
   end
   
+   WaitSecs(isi); %this is mostly so that the participants has time to depress the mouse button
+
+  
   % wait for mouse click to continue
   mouse = 0;
   while mouse == 0
@@ -191,6 +194,13 @@ while trial <= size(stims,1)
   while screen <= size(stims,2)
     Screen('DrawTexture',testscreen,blank); %reset testscreen screen to blank
     Screen('DrawTexture',testscreen,gridscreen); %copy the texture from gridscreen (i.e. grid plus all the buttons)
+    
+    if screen ==1 %hiding buttons for start and end
+      Screen('FillRect',testscreen,bgcol,sp.button1.*[0.9,0.9,1.1,1.1]);
+    elseif screen == size(stims,2)
+      Screen('FillRect',testscreen,bgcol,sp.button2.*[0.9,0.9,1.1,1.1]);
+    end
+   
     
     if replay %if a replay highlights targets
       targs = screen == stimtargets(trial).screenno; %find which targets are on this screen
@@ -271,7 +281,7 @@ while trial <= size(stims,1)
                 end
               end
               
-              mouseOverString = sprintf('%s, %s, %s %s',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape); %create string
+              mouseOverString = sprintf('%s, %s, %s %s on the %s of %s ',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape,mouseOverValues.location,mouseOverValues.screen); %create string
               mouseOverString = strrep(mouseOverString,'_',' ');
               
               Screen('DrawTexture',mOScreen,testscreen);%copy testscreen to mO screen
@@ -302,7 +312,6 @@ while trial <= size(stims,1)
         
       end
     end
-    WaitSecs(isi); %this is mostly so that the participants has time to depress the mouse button
   end
   
   Screen('DrawTexture',expWin,blank); %load blank texture into the online window
