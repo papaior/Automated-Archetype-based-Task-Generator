@@ -12,7 +12,7 @@ save('log','logfile')
 
 numTasks = 30;
 numBlock = 10;
-numPractice = 1;
+numPractice = 2;
 instructions = true;
 
 screens = Screen('Screens');

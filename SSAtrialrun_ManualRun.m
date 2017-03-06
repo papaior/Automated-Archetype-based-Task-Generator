@@ -1,5 +1,5 @@
- logfile = 'ManualRun_logfile';
-load('SSASpecs.mat');
+logfile = 'ManualRun_logfile';
+%load('SSASpecs.mat');
 
 screens = Screen('Screens');
 screenNumber = max(screens);
@@ -48,6 +48,7 @@ filename = logfile;
 
 mouseOverText = true;
 givefeedback = true;
+highlightfoils = false;
 
 [expWin,rect]=PsychImaging('OpenWindow',screenNumber, bgcol);%opens onscreen window
 
@@ -218,7 +219,25 @@ while trial <= size(stims,1)
         Screen('DrawTexture',testscreen,buttonsscreen,buttons.loc(ith,:),buttons.loc(ith,:));
       end
     end
-              
+    
+    if highlightfoils
+      if replay %if a replay highlights foils
+        foils = screen == stimfoils(trial).screenno; %find which targets are on this screen
+        for foili = 1:length(foils) %loop through targets
+          if foils(foili) %if target on this screen, highlight
+            foilScreen = stimfoils(trial).screenno(foili);
+            foilLoc = stimfoils(trial).locno(foili);
+            HighlightRect = [grid.pos+grid.rectsize.*stims(trial,screen,foilLoc).location grid.pos+grid.rectsize.*(stims(trial,screen,foilLoc).location+[1 1])];
+            Screen('FrameRect',testscreen,[190 255 190],HighlightRect,grid.linewidth);
+          end
+        end
+        Screen('DrawTexture',testscreen,repbuttonsscreen,buttons.loc(1,:),buttons.loc(1,:));
+      else
+        for ith = 1:length(buttons.label)
+          Screen('DrawTexture',testscreen,buttonsscreen,buttons.loc(ith,:),buttons.loc(ith,:));
+        end
+      end
+    end
     
     for loc =  1:size(stims,3) %this prints all the stimuli
       Screen('TextFont',letterscreen,stimfontnum);%this font will actually is a custom font.

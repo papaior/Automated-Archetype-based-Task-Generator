@@ -5,9 +5,9 @@ load('stimVars');
 load('task.mat');
 
 %% create stim for trials
-numtrials = 5;
+numtrials = 100;
 parameters = fieldnames(stimVar);
-screens = fieldnames(stimVar.screen);
+screennames = fieldnames(stimVar.screen);
 locations = fieldnames(stimVar.location);
 yessFields = fieldnames(SSA.yess);
 nosFields = fieldnames(SSA.nos);
@@ -63,7 +63,7 @@ for trial = 1:numtrials
       end
       
       %redefine location and screen as the current values
-      stims(trial,sn,loc).screen = stimVar.screen.(screens{sn});
+      stims(trial,sn,loc).screen = stimVar.screen.(screennames{sn});
       stims(trial,sn,loc).location = stimVar.location.(locations{loc});
       
       %check if we need to compare to target
@@ -102,7 +102,7 @@ for trial = 1:numtrials
               stims(trial,sn,loc).(field) = stimVar.(field).(strjoin(Sample(fieldnames(stimVar.(field)))));
             end
             %restore location and screen as the current values
-            stims(trial,sn,loc).screen = stimVar.screen.(screens{sn});
+            stims(trial,sn,loc).screen = stimVar.screen.(screennames{sn});
             stims(trial,sn,loc).location = stimVar.location.(locations{loc});
             it_num = it_num+1; %increases the iteration counter
           end
@@ -117,16 +117,16 @@ for trial = 1:numtrials
     %determine which screen it will be on
     %if screen is a target property, set to that
     if isfield(SSA.yess,'screen')
-      stimtargets(trial).screenno= find(strcmp(screens,SSA.yess.screen));
+      stimtargets(trial).screenno= find(strcmp(screennames,SSA.yess.screen));
       %if screen a negative target property, set it as something other than SSA.nos.screen
     elseif isfield(SSA.nos,'screen')
-      stimtargets(trial).screenno= randi([1 length(screens)]);
-      while stimtargets(trial).screenno == find(strcmp(screens,SSA.nos.screen))
-        stimtargets(trial).screenno= randi([1 length(screens)]);
+      stimtargets(trial).screenno= randi([1 length(screennames)]);
+      while stimtargets(trial).screenno == find(strcmp(screennames,SSA.nos.screen))
+        stimtargets(trial).screenno= randi([1 length(screennames)]);
       end
       %else if it doesn't matter, pick at random
     else
-      stimtargets(trial).screenno= randi([1 length(screens)]);
+      stimtargets(trial).screenno= randi([1 length(screennames)]);
     end
     
     %Determine the location too (same idea as screen)
@@ -160,7 +160,7 @@ for trial = 1:numtrials
       stims(trial,stimtargets(trial).screenno,stimtargets(trial).locno).(field) = stimVar.(field).(value);
     end
     %Set screen and location, and set discard to false
-    stims(trial,stimtargets(trial).screenno,stimtargets(trial).locno).screen = stimVar.screen.(screens{stimtargets(trial).screenno});
+    stims(trial,stimtargets(trial).screenno,stimtargets(trial).locno).screen = stimVar.screen.(screennames{stimtargets(trial).screenno});
     stims(trial,stimtargets(trial).screenno,stimtargets(trial).locno).location = stimVar.location.(locations{stimtargets(trial).locno});
     stims(trial,stimtargets(trial).screenno,stimtargets(trial).locno).discard = false;
     
@@ -202,24 +202,41 @@ for trial = 1:numtrials
   foilfield = stimfoils(trial).foilfield;
   
   %Pick random screen and loc
-  stimfoils(trial).screenno= randi([1 length(screens)]);
+  stimfoils(trial).screenno= randi([1 length(screennames)]);
   stimfoils(trial).locno= randi([1 length(locations)]);
   %check that it's not in the same loc as target (if target exists
-  while stimfoils(trial).screenno == sum(stimtargets(trial).screenno) && stimfoils(trial).locno == sum(stimtargets(trial).locno)
-    stimfoils(trial).screenno= randi([1 length(screens)]);
-    stimfoils(trial).locno= randi([1 length(locations)]);
+  if sum(stimtargets(trial).screenno)
+    while stimfoils(trial).screenno == sum(stimtargets(trial).screenno)
+      stimfoils(trial).screenno= randi([1 length(screennames)]);
+    end
+  elseif ismember('screen',fieldnames(SSA.yess))
+    while stimfoils(trial).screenno == find(strcmp(screennames,SSA.yess.screen))
+      stimfoils(trial).screenno= randi([1 length(screennames)]);
+    end
   end
+  if sum(stimtargets(trial).locno)
+    while stimfoils(trial).locno == sum(stimtargets(trial).locno)
+      stimfoils(trial).locno= randi([1 length(locations)]);
+    end
+  elseif ismember('location',fieldnames(SSA.yess))
+    while stimfoils(trial).locno == find(strcmp(locations,SSA.yess.location))
+      stimfoils(trial).locno= randi([1 length(locations)]);
+    end
+  end
+  
+  
   %if screen or loc need to be a particular value, do that
-    %if foilfield = screen, and screen is in nosFields, set screen to SSA.nos.screen
+  %if foilfield = screen, and screen is in nosFields, set screen to SSA.nos.screen
   if strcmp(foilfield,'screen') && ismember('screen',fieldnames(SSA.nos))
-    stimfoils(trial).screenno = find(strcmp(screens,SSA.nos.screen));
-    %if it's not foilfield, and is in yess, set to SSA.yess.screen
+    stimfoils(trial).screenno = find(strcmp(screennames,SSA.nos.screen));
+    %if it's in foilfield, and is in nos, set to SSA.nos.screen
   elseif ~strcmp(foilfield,'screen') && ismember('screen',fieldnames(SSA.yess))
-    stimfoils(trial).screenno = find(strcmp(screens,SSA.yess.screen));
-    %Same two conditions for loc
+    stimfoils(trial).screenno = find(strcmp(screennames,SSA.yess.screen));
+    %if it's not in foilfield, and is in yess, set to SSA.yess.screen
   end
   if strcmp(foilfield,'location') && ismember('location',fieldnames(SSA.nos))
     stimfoils(trial).locno = find(strcmp(locations,SSA.nos.location));
+    %do the same for loc
   elseif ~strcmp(foilfield,'location') && ismember('location',fieldnames(SSA.yess))
     stimfoils(trial).locno = find(strcmp(locations,SSA.yess.location));
   end
@@ -232,7 +249,7 @@ for trial = 1:numtrials
     stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).(field) = stimVar.(field).(value);
   end
   %Set screen and location and set discard to false
-  stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).screen = stimVar.screen.(screens{stimfoils(trial).screenno});
+  stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).screen = stimVar.screen.(screennames{stimfoils(trial).screenno});
   stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).location = stimVar.location.(locations{stimfoils(trial).locno});
   stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).discard = false;
   
@@ -241,7 +258,7 @@ for trial = 1:numtrials
     stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).(yessFields{ith})= stimVar.(yessFields{ith}).(SSA.yess.(yessFields{ith}));
   end
   %Reset screen and location
-  stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).screen = stimVar.screen.(screens{stimfoils(trial).screenno});
+  stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).screen = stimVar.screen.(screennames{stimfoils(trial).screenno});
   stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).location = stimVar.location.(locations{stimfoils(trial).locno});
   
   %Make sure that no values are set to nos
@@ -270,7 +287,7 @@ for trial = 1:numtrials
     end
   end
   %Reset screen and location
-  stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).screen = stimVar.screen.(screens{stimfoils(trial).screenno});
+  stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).screen = stimVar.screen.(screennames{stimfoils(trial).screenno});
   stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).location = stimVar.location.(locations{stimfoils(trial).locno});
   
   
@@ -291,13 +308,13 @@ for trial = 1:numtrials
         stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).(foilfield{:}) = stimVar.(foilfield{:}).(strjoin(Sample(fieldnames(stimVar.(foilfield{:})))));
       end
     else
-      while ~stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).(foilfield{:}) == stimVar.(foilfield{:}).(SSA.nos.(foilfield{:}))
-        stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).(foilfield{:}) = stimVar.(foilfield{:}).(strjoin(Sample(fieldnames(stimVar.(foilfield{:})))));
+      while any(stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).(foilfield{:}) ~= stimVar.(foilfield{:}).(SSA.nos.(foilfield{:})))
+        stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).(foilfield{:}) = stimVar.(foilfield{:}).(SSA.nos.(foilfield{:}));
       end
     end
   end
   %Reset screen and location
-  stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).screen = stimVar.screen.(screens{stimfoils(trial).screenno});
+  stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).screen = stimVar.screen.(screennames{stimfoils(trial).screenno});
   stims(trial,stimfoils(trial).screenno,stimfoils(trial).locno).location = stimVar.location.(locations{stimfoils(trial).locno});
   
 end
