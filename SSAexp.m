@@ -57,7 +57,7 @@ grid.bgcol = [1 1 1]*white/5;
 highlightcol = [255 100 100];
 textcol = [1 1 1]*black;
 txtsize = round(res.height/28);
-isi = 0.500;
+isi = 0.100;
 iti = 1;
 filename = logfile;
 

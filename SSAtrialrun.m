@@ -184,6 +184,7 @@ while trial <= size(stims,1)
       DrawFormattedText(expWin,'Click on a stimulus to see the description','center',round(0.02*res.height),white); %add text
     end
     Screen('Flip',expWin);% present things
+    WaitSecs(isi); %this is mostly so that the participants has time to depress the mouse button
     
     %wait for mouse click, and determine what to do next
     cont = 0;
@@ -208,7 +209,7 @@ while trial <= size(stims,1)
             if mouseOver && ~stims(trial,screen,loc).discard %if the mouse is on a grid square, find the values for that stim
               mouseOverValues = struct(); %creates struct that saves values
               %Get all fields
-              mOFields = [fieldnames(stimVar)];
+              mOFields = fieldnames(stimVar);
               for mOFieldCount = 1:length(mOFields)
                 mOField = mOFields{mOFieldCount}; %get name for all fields (sequenctially)
                 mOSubfields = [fieldnames(stimVar.(mOField))];
@@ -222,7 +223,7 @@ while trial <= size(stims,1)
                 end
               end
               
-              mouseOverString = sprintf('%s, %s, %s %s',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape); %create string
+              mouseOverString = sprintf('%s, %s, %s %s on the %s of %s ',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape,mouseOverValues.location,mouseOverValues.screen); %create string
               mouseOverString = strrep(mouseOverString,'_',' ');
               
               Screen('DrawTexture',mOScreen,testscreen);%copy testscreen to mO screen
@@ -253,7 +254,6 @@ while trial <= size(stims,1)
         
       end
     end
-    WaitSecs(isi); %this is mostly so that the participants has time to depress the mouse button
   end
   
   Screen('DrawTexture',expWin,blank); %load blank texture into the online window
