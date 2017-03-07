@@ -1,4 +1,5 @@
 *.mat
 *logfile
+*.m~
 
 .DS_Store
