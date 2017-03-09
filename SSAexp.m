@@ -22,8 +22,6 @@ Screen('Preference', 'DefaultFontName', 'Helvetica')
 fonts = struct2table(FontInfo('Fonts'));
 stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
 
-
-
 %make resolution into a standard res, or as close as we can get it (standardize across monitors)
 resVal = [1280 800]; %desired resolution
 resolutions = struct2table(Screen('Resolutions',screenNumber)); %gets possible resolutions for monitor

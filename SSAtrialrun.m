@@ -104,6 +104,11 @@ DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],
 log = fopen(filename,'a+');
 fprintf(log,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tTargetScreenNo\tTargetLoc\n');
 
+clicklog = fopen(strcat(string(subjNumber), '_click_logfile'), 'a+');
+trial_start = now;
+fprintf(clicklog, 'Date: %s, Time: %s\n', datestr(trial_start,'yyyy/mm/dd'),datestr(trial_start,'HH:MM:SS'));
+fprintf(clicklog, 'Time\tTrial\tEvent\tScreen\tLocation\n');
+
 %  present trials
 trial = 1;
 replay = 0;
@@ -199,9 +204,11 @@ while trial <= size(stims,1)
       mouse = sum(mouseb);
       if mouse ~= 0 %if click happened, find out where
         if sp.button1(1) <= mousex && mousex <= sp.button1(3) && sp.button1(2) < mousey && mousey < sp.button1(4) %if on prev button, go to previous screen
+          fprintf(clicklog, '%s\t%d\t%s\t%d\t%d\n', datestr(now-trial_start, 'MM:SS.FFF'), trial, 'prev', screen, 0);
           screen = max(1,screen-1);
           cont = 1;
         elseif sp.button2(1) <= mousex && mousex <= sp.button2(3) && sp.button2(2) <= mousey && mousey <= sp.button2(4) %if on next button, go to next screen
+          fprintf(clicklog, '%s\t%d\t%s\t%d\t%d\n', datestr(now-trial_start, 'MM:SS.FFF'), trial, 'next', screen, 0);
           screen = min(size(stims,2),screen+1);
           cont = 1;
         else %if on any screen, check for response or mouseovers
@@ -212,6 +219,7 @@ while trial <= size(stims,1)
            
             
             if mouseOver && ~stims(trial,screen,loc).discard %if the mouse is on a grid square, find the values for that stim
+              fprintf(clicklog, '%s\t%d\t%s\t%d\t%d\n', datestr(now-trial_start, 'MM:SS.FFF'), trial, 'MsOv', screen, loc);
               mouseOverValues = struct(); %creates struct that saves values
               %Get all fields
               mOFields = fieldnames(stimVar);
@@ -248,6 +256,7 @@ while trial <= size(stims,1)
           for ith = 1:numbuttons
             if buttons.loc(ith,1)<= mousex && mousex <=buttons.loc(ith,3) && buttons.loc(ith,2)<= mousey && mousey <=buttons.loc(ith,4)
               response = buttons.label(ith);
+              fprintf(clicklog, '%s\t%d\t%s\t%d\t%d\n', datestr(now-trial_start, 'MM:SS.FFF'), trial, response{:}, screen, 0);
               screen = size(stims,2)+1; %this ends this loop to move to the next trial
               if ~replay
                 feedback(trial) = strcmp(response{:},stimtargets(trial).correct);
@@ -282,6 +291,7 @@ end
 Screen('TextSize',expWin,txtsize);
 DrawFormattedText(expWin,sprintf('Ok, that''s it for this task!\n You got %.f out of %.f trials correct.\n\n\n(Click anywhere to continue to the next task)', sum(feedback),size(stims,1)),'center','center',textcol); %prints feedback
 fprintf(log,'\t\t\t\tTotalAccuracy\t%.f\n',sum(feedback));
+fclose(clicklog);
 Screen('Flip',expWin);
 
 %wait for mouse click to continue
