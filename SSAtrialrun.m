@@ -104,7 +104,7 @@ DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],
 log = fopen(filename,'a+');
 fprintf(log,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tTargetScreenNo\tTargetLoc\n');
 
-clicklog = fopen(strcat(string(subjNumber), '_click_logfile'), 'a+');
+clicklog = fopen(strcat(subjNumber, '_click_logfile'), 'a+');
 trial_start = now;
 fprintf(clicklog, 'Date: %s, Time: %s\n', datestr(trial_start,'yyyy/mm/dd'),datestr(trial_start,'HH:MM:SS'));
 fprintf(clicklog, 'Time\tTrial\tEvent\tScreen\tLocation\n');

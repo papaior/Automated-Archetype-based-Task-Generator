@@ -101,10 +101,34 @@ function drawNext(destscreen, btform)
 	DrawFormattedText(destscreen, 'Next ' ,'center','center',btform.textcol,[],[],[],[],[],btform.button2);
 end
 
+%% Show instructions
+emptyscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);
+Screen('TextSize', expWin, 30);
+DrawFormattedText(expWin,'Welcome!\n\nYou''re going to be asked to do a series of tasks involving visual stimuli.\n\n\nClick anywhere to continue','center','center',white);
+Screen('Flip',expWin);
+
+clicked = 0;
+while ~clicked
+  [x,y,clicked] = GetMouse(screenNumber);
+  clicked = sum(clicked);
+end
+WaitSecs(isi);
+
+DrawFormattedText(expWin,'These stimuli are defined by six variables:\n Color, Size, Orientation, Shape, Location, and Screen Position.\n\n\nClick anywhere to continue','center','center',white);
+Screen('Flip',expWin);
+
+clicked = 0;
+while ~clicked
+  [x,y,clicked] = GetMouse(screenNumber);
+  clicked = sum(clicked);
+end
+WaitSecs(isi);
+
+
 %% show all the dimensions
 dimnames = fieldnames(stimVar);
 defsymbol.colors = stimVar.colors.red;
-defsymbol.shape = stimVar.shape.A;
+defsymbol.shape = stimVar.shape.X;
 defsymbol.size = stimVar.size.medium;
 defsymbol.orientation = stimVar.orientation.upright;
 sym_per_row = 6;
