@@ -133,6 +133,8 @@ while trial <= size(stims,1)
     Screen('Flip',expWin);
   end
   
+  
+  
   % wait for mouse click to continue
   mouse = 0;
   while mouse == 0
@@ -214,8 +216,11 @@ while trial <= size(stims,1)
         else %if on any screen, check for response or mouseovers
           for loc =  1:size(stims,3) %check for mouseovers in each gridsquare
             checkRect = [grid.pos+grid.rectsize.*stims(trial,screen,loc).location grid.pos+grid.rectsize.*(stims(trial,screen,loc).location+[1 1])];
-            mouseOver = mouseOverText*(mousex<=checkRect(3) && mousex >=checkRect(1));
-            mouseOver = mouseOver*(mousey<=checkRect(4) && mousey>=checkRect(2));
+            rectClick = (mousex<=checkRect(3) && mousex >=checkRect(1)); %check if mouse click was within the x range of the button
+            rectClick = rectClick*(mousey<=checkRect(4) && mousey>=checkRect(2));%check if mouse click was within the y range of the button
+            mouseOver = mouseOverText*rectClick; 
+            
+            
            
             
             if mouseOver && ~stims(trial,screen,loc).discard %if the mouse is on a grid square, find the values for that stim

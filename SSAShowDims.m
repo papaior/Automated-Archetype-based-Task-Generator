@@ -57,7 +57,7 @@ grid.bgcol = white/5;
 highlightcol = [255 100 100];
 textcol = black;
 txtsize = round(res.height/28);
-isi = 0.500;
+isi = 0.100;
 iti = 1;
 
 grid.rectsize = [res.width*1/5 res.height*1/5]; %size of one grid rectangle
@@ -79,7 +79,7 @@ sp.linewidth = 2;
 sp.button1 = [sp.pos(1,:) sp.pos(1,:)+sp.rectsize];
 sp.button2 = [sp.pos(2,:) sp.pos(2,:)+sp.rectsize];
 
-PsychImaging('PrepareConfiguration');
+%PsychImaging('PrepareConfiguration');
 [expWin,rect]=PsychImaging('OpenWindow',screenNumber, grid.bgcol);
 
 gridscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);
@@ -123,6 +123,31 @@ while ~clicked
   clicked = sum(clicked);
 end
 WaitSecs(isi);
+
+%% Adding instructions in the begining
+emptyscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);
+Screen('TextSize', expWin, 20);
+DrawFormattedText(expwin,'Welcome!/n/nYou''re going to be asked to do a series of tasks involving visual stimuli./n/n/nClick anywhere to continue','center','center',white);
+Screen('Flip',expwin);
+
+clicked = 0;
+while ~clicked
+  [x,y,clicked] = GetMouse(screenNumber);
+  clicked = sum(clicked);
+end
+WaitSecs(isi);
+
+DrawFormattedText(expwin,'These stimuli are defined by six variables:/n Color, Size, Orientation, Shape, Location, and Screen Position./n/n/nClick anywhere to continue','center','center',white);
+Screen('Flip',expwin);
+
+clicked = 0;
+while ~clicked
+  [x,y,clicked] = GetMouse(screenNumber);
+  clicked = sum(clicked);
+end
+WaitSecs(isi);
+
+
 
 
 %% show all the dimensions

@@ -5,7 +5,7 @@ load('stimVars');
 load('task.mat');
 
 %% create stim for trials
-numtrials = 100;
+numtrials = 5;
 parameters = fieldnames(stimVar);
 screennames = fieldnames(stimVar.screen);
 locations = fieldnames(stimVar.location);
