@@ -69,14 +69,20 @@ blank = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);%this is an empty 
 letterscreen = Screen('OpenOffscreenWindow',screenNumber,grid.bgcol,rect);%used to print letters in
 testscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);%this is also empty
 mOScreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);%this is also empty
-%responce button screen
+highlightscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);%empty
+%done button screen
 buttonsscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);
-for ith = 1:length(buttons.label)
-  Screen('FillRect',buttonsscreen,buttons.col,buttons.loc(ith,:));% Same process as above, done for every button
-  Screen('FrameRect',buttonsscreen,buttons.framecol,buttons.loc(ith,:),buttons.linewidth);
-  Screen('TextSize',buttonsscreen,buttons.textsize);
-  DrawFormattedText(buttonsscreen, buttons.label{ith} ,'center','center',sp.textcol,[],[],[],[],[],buttons.loc(ith,:  ));
-end
+% for ith = 1:length(buttons.label)
+%   Screen('FillRect',buttonsscreen,buttons.col,buttons.loc(ith,:));% Same process as above, done for every button
+%   Screen('FrameRect',buttonsscreen,buttons.framecol,buttons.loc(ith,:),buttons.linewidth);
+%   Screen('TextSize',buttonsscreen,buttons.textsize);
+%   DrawFormattedText(buttonsscreen, buttons.label{ith} ,'center','center',sp.textcol,[],[],[],[],[],buttons.loc(ith,:  ));
+% end
+Screen('FillRect',buttonsscreen,buttons.col,buttons.loc(1,:));% Same process as above, done for every button
+Screen('FrameRect',buttonsscreen,buttons.framecol,buttons.loc(1,:),buttons.linewidth);
+Screen('TextSize',buttonsscreen,buttons.textsize);
+DrawFormattedText(buttonsscreen, 'Done' ,'center','center',sp.textcol,[],[],[],[],[],buttons.loc(1,:  ));
+
 %continue button screen
 repbuttonsscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);
 Screen('FillRect',repbuttonsscreen,buttons.col,buttons.loc(1,:));% Same process as above, done for every button
@@ -117,7 +123,7 @@ while trial <= size(stims,1)
   if replay %if replaying, show replay instructions
     %Screen('DrawTexture',expWin,repbuttonsscreen)
     Screen('TextSize',expWin,txtsize);
-    DrawFormattedText(expWin,sprintf('The correct answer is %s\n\n\nClick anywhere to review\nClick the continue button to move on',stimtargets(trial).correct),'center','center',textcol,[],[],[],[],[],grid.border); %prints instructions
+    DrawFormattedText(expWin,sprintf('\n\n\nClick anywhere to see the correct answer highlighted.\n\n\nClick the continue button to move on',stimtargets(trial).correct),'center','center',textcol,[],[],[],[],[],grid.border); %prints instructions
     Screen('Flip',expWin);%this command presents the screen that was set up before (i.e. the instructions)
   elseif trial ~= numtrials
     Screen('DrawTexture',expWin,buttonsscreen)
@@ -133,7 +139,7 @@ while trial <= size(stims,1)
     Screen('Flip',expWin);
   end
   
-  
+  highlightPos = [0 0];
   
   % wait for mouse click to continue
   mouse = 0;
@@ -156,13 +162,14 @@ while trial <= size(stims,1)
     end
     
     if replay %if a replay highlights targets
+      highlightPos = responses{trial};
       targs = screen == stimtargets(trial).screenno; %find which targets are on this screen
       for targi = 1:length(targs) %loop through targets
         if targs(targi) %if target on this screen, highlight
           targScreen = stimtargets(trial).screenno(targi);
           targLoc = stimtargets(trial).locno(targi);
           HighlightRect = [grid.pos+grid.rectsize.*stims(trial,screen,targLoc).location grid.pos+grid.rectsize.*(stims(trial,screen,targLoc).location+[1 1])];
-          Screen('FrameRect',testscreen,highlightcol,HighlightRect,grid.linewidth);
+          Screen('FrameRect',testscreen,replaycol,HighlightRect,grid.linewidth*1.5);
         end
       end
       Screen('DrawTexture',testscreen,repbuttonsscreen,buttons.loc(1,:),buttons.loc(1,:));
@@ -171,7 +178,6 @@ while trial <= size(stims,1)
         Screen('DrawTexture',testscreen,buttonsscreen,buttons.loc(ith,:),buttons.loc(ith,:));
       end
     end
-              
     
     for loc =  1:size(stims,3) %this prints all the stimuli
       Screen('TextFont',letterscreen,stimfontnum);%this font will actually is a custom font.
@@ -189,14 +195,29 @@ while trial <= size(stims,1)
     Screen('TextSize',testscreen,round(txtsize*1.2));
     DrawFormattedText(testscreen,sprintf('Screen %1.f',screen),'center','center',textcol,[],[],[],[],[],[0 (grid.border(4)+ grid.rectsize(2)/2) res.width (grid.border(4)+grid.rectsize(2)/2+sp.rectsize(2))]);
     
-    Screen('DrawTexture',expWin,testscreen); %load texture into the online window
+    Screen('DrawTexture',highlightscreen,testscreen);
     
+    % highlight clicked rects
+    resps = screen == highlightPos(:,1); %find which responses are on this screen
+    for respi = 1:length(resps) %loop through targets
+      if resps(respi) %if target on this screen, highlight
+        respScreen = highlightPos(respi,1);
+        respLoc = highlightPos(respi,2);
+        HighlightRect = [grid.pos+grid.rectsize.*stims(trial,screen,respLoc).location grid.pos+grid.rectsize.*(stims(trial,screen,respLoc).location+[1 1])];
+        Screen('FrameRect',testscreen,highlightcol,HighlightRect,grid.linewidth);
+      end
+    end
+    
+    Screen('DrawTexture',expWin,testscreen); %load texture into the online window
     if noclick
       Screen('TextSize',expWin,txtsize);
       DrawFormattedText(expWin,'Click on a stimulus to see the description','center',round(0.02*res.height),white); %add text
     end
-    Screen('Flip',expWin);% present things
-    WaitSecs(isi); %this is mostly so that the participants has time to depress the mouse button
+    
+    if ~exist('mouseOver') ||  ~mouseOver
+      Screen('Flip',expWin);% present things
+      WaitSecs(isi); %this is mostly so that the participants has time to depress the mouse button
+    end
     
     %wait for mouse click, and determine what to do next
     cont = 0;
@@ -220,8 +241,25 @@ while trial <= size(stims,1)
             rectClick = rectClick*(mousey<=checkRect(4) && mousey>=checkRect(2));%check if mouse click was within the y range of the button
             mouseOver = mouseOverText*rectClick; 
             
-            
-           
+            if rectClick
+              if ~any(ismember(highlightPos,[screen loc],'rows'))
+                highlightPos = [highlightPos; screen loc];
+              else
+                highlightPos = highlightPos(~ismember(highlightPos,[screen loc],'rows'),:);
+              end
+            end
+          
+            % highlight clicked rects
+            Screen('DrawTexture',testscreen,highlightscreen);
+            resps = screen == highlightPos(:,1); %find which responses are on this screen
+            for respi = 1:length(resps) %loop through targets
+              if resps(respi) %if target on this screen, highlight
+                respScreen = highlightPos(respi,1);
+                respLoc = highlightPos(respi,2);
+                HighlightRect = [grid.pos+grid.rectsize.*stims(trial,screen,respLoc).location grid.pos+grid.rectsize.*(stims(trial,screen,respLoc).location+[1 1])];
+                Screen('FrameRect',testscreen,highlightcol,HighlightRect,grid.linewidth);
+              end
+            end
             
             if mouseOver && ~stims(trial,screen,loc).discard %if the mouse is on a grid square, find the values for that stim
               fprintf(clicklog, '%s\t%d\t%s\t%d\t%d\n', datestr(now-trial_start, 'MM:SS.FFF'), trial, 'MsOv', screen, loc);
@@ -251,6 +289,11 @@ while trial <= size(stims,1)
               mOscreentime = Screen('Flip',expWin); %flip
               Screen('DrawTexture',expWin,testscreen);%reset screen
               noclick = false;
+            elseif mouseOver
+              Screen('DrawTexture',expWin,testscreen);
+              mOscreentime = Screen('Flip',expWin); %flip
+              Screen('DrawTexture',expWin,testscreen);%reset screen
+
             elseif GetSecs > mOscreentime+0.2
                 Screen('DrawTexture',expWin,testscreen);
                 mOscreentime = Screen('Flip',expWin); %flip
@@ -264,13 +307,22 @@ while trial <= size(stims,1)
               fprintf(clicklog, '%s\t%d\t%s\t%d\t%d\n', datestr(now-trial_start, 'MM:SS.FFF'), trial, response{:}, screen, 0);
               screen = size(stims,2)+1; %this ends this loop to move to the next trial
               if ~replay
-                feedback(trial) = strcmp(response{:},stimtargets(trial).correct);
+                highlightPos = highlightPos(~ismember(highlightPos,[0 0],'rows'),:);
+                responses{trial} = highlightPos;
+                feedbackith = 0;
+                for ith = 1:size(highlightPos,1)
+                  feedbackith(ith) = ismember(highlightPos(ith,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
+                end
+                feedback(trial) = all(feedbackith);
               end
               cont = 1;
             end
           end
         end
-        
+        while mouse ~= 0
+          [mousex,mousey,mouseb] = GetMouse(screenNumber);
+          mouse = sum(mouseb);
+        end
       end
     end
   end
@@ -302,6 +354,10 @@ Screen('Flip',expWin);
 %wait for mouse click to continue
 mouse = 0;
 while mouse == 0
+  [mousex,mousey,mouseb] = GetMouse(screenNumber);
+  mouse = sum(mouseb);
+end
+while mouse ~= 0
   [mousex,mousey,mouseb] = GetMouse(screenNumber);
   mouse = sum(mouseb);
 end

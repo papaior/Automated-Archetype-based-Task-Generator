@@ -20,7 +20,7 @@ for trial = 1:numtrials
   
   %determine if targ would be present
   if SSA.presence
-    SSA.present = Sample([true false]);
+    SSA.present = Sample([true]);
     if SSA.present %specifies what the correct response would be
       stimtargets(trial).correct = 'Present';
     else

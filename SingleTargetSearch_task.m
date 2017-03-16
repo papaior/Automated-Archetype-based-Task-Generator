@@ -4,7 +4,7 @@ clear SSA StimVar;
 load('stimVars'); %loads up a structure named stimVar 
 
 %% Pick target
-SSA.presence = Sample([true false]); %if 1, task is report wether target was present or not. If 0, task is report particular dimension
+SSA.presence = Sample([true]); %if 1, task is report wether target was present or not. If 0, task is report particular dimension
 SSA.conjuction = {'AND'};
 SSA.conjuctionNo = randi([1 4]);%max conjuctions is 4
 SSA.notmask = true;
@@ -217,7 +217,7 @@ end
 % SSA.instructions = sprintf('%s\n',SSA.instructions);
 
 if SSA.presence
-  SSA.instructions = sprintf('%sReport whether the target was present or not.\n',SSA.instructions);
+  SSA.instructions = sprintf('%sClick on the target to highlight it.\nClick Done to lock your choice.',SSA.instructions);
 else
     SSA.instructions = sprintf('%sReport if the target is', SSA.instructions);
     if isfield(SSA.report,'colors')
