@@ -19,7 +19,8 @@ for t=1:5
 	stimtargets(1,t).targetNum = 0;
 	stimtargets(1,t).screenno = [];
 	stimtargets(1,t).locno = [];
-	stimtargets(1,t).correct = choices{randi(2)};
+% 	stimtargets(1,t).correct = choices{randi(2)};
+	stimtargets(1,t).correct = 'Present';
 end
 
 % llist = fieldnames(stimVar.location);

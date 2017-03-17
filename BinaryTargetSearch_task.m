@@ -43,7 +43,7 @@ end
 
 task.instructions = {'If you see'};
 if logic==0
-	task.instructions = strcat(task.instructions, ' ANY');
+	task.instructions = strcat(task.instructions, ' ONE AND ONLY ONE');
 else
 	task.instructions = strcat(task.instructions, ' BOTH');
 end
@@ -79,7 +79,13 @@ end
 for idx = 1:2
     task.instructions = strcat(task.instructions, '\n\t\t', strrep(insitems{idx}{1}, '_', ' '));
 end
-task.instructions = strcat(task.instructions, {'\nplease click "Present"; otherwise please click "Absent".\n'});
+task.instructions = strcat(task.instructions, {'\nplease click to mark'});
+if logic==0
+	task.instructions = strcat(task.instructions, ' it');
+else
+	task.instructions = strcat(task.instructions, ' them');
+end
+task.instructions = strcat(task.instructions, {'.\nClick "done" when you are done.\n'});
 temp = task.instructions{1};
 
 task.instructions = sprintf(temp);

@@ -31,7 +31,7 @@ end
 
 task.instructions = {'If you see'};
 if logic==0
-	nums = {' the item', ' ANY of the two items', ' ANY of the three items', ' ANY of the four items'};
+	nums = {' the item', ' ONE AND ONLY ONE of the two items', ' ONE AND ONLY ONE of the three items', ' ONE AND ONLY ONE of the four items'};
 	task.instructions = strcat(task.instructions, nums{dim});
 else
 	nums = {' the item', ' ALL of the two items', ' ALL of the three items', ' ALL of the four items'};
@@ -79,7 +79,13 @@ for idx = 1:dim
 % 	paddings = ones(1, 2)*30;
 	task.instructions = strcat(task.instructions, '\n\t\t', strrep(insitems{idx}{1}, '_', ' '));
 end
-task.instructions = strcat(task.instructions, {'\nplease click "Present"; otherwise please click "Absent".\n'});
+task.instructions = strcat(task.instructions, {'\nplease click to mark'});
+if logic==0
+	task.instructions = strcat(task.instructions, ' it');
+else
+	task.instructions = strcat(task.instructions, ' them');
+end
+task.instructions = strcat(task.instructions, {'.\nClick "done" when you are done.\n'});
 temp = task.instructions{1};
 task.instructions = sprintf(temp);
 
