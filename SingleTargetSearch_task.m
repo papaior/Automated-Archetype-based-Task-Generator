@@ -36,6 +36,10 @@ while ~validtask
   if sum(ismember(SSA.targs(:,1),oVars))>0
     validtask=1;
   end
+  
+  if all(ismember({'screen','location'},SSA.targs(:,1)))
+    validtask = 0;
+  end
 end
 
 SSA.yess = SSA.targs(~SSA.notmask,:);

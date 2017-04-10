@@ -65,8 +65,8 @@ mouseOverText = true;
 [expWin,rect]=PsychImaging('OpenWindow',screenNumber, bgcol);%opens onscreen window
 
 
-tasks = {'MultipleTargetSearch_task.m','BinaryTargetSearch_task.m'};
-trials = {'MultipleTargetSearch_trials.m','BinaryTargetSearch_trials.m'};
+tasks = {'SingleTargetSearch_task','MultipleTargetSearch_task.m','BinaryTargetSearch_task.m'};
+trials = {'SingleTargetSearch_trials','MultipleTargetSearch_trials.m','BinaryTargetSearch_trials.m'};
 
 taskSeq = zeros(1,numTasks);
 taskSeqp = 1;
