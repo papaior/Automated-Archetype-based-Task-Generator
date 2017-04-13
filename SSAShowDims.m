@@ -8,7 +8,7 @@ stimVar = stimVar.stimVar;
 screens = Screen('Screens');
 screenNumber = max(screens);
 % screenNumber = 0;
-Screen('Preference', 'DefaultFontName', 'Calibri' );
+Screen('Preference', 'DefaultFontName', 'Helvetica' );
 
 fonts = struct2table(FontInfo('Fonts'));
 stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
@@ -123,32 +123,6 @@ while ~clicked
   clicked = sum(clicked);
 end
 WaitSecs(isi);
-
-%% Adding instructions in the begining
-emptyscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);
-Screen('TextSize', expWin, 20);
-DrawFormattedText(expwin,'Welcome!/n/nYou''re going to be asked to do a series of tasks involving visual stimuli./n/n/nClick anywhere to continue','center','center',white);
-Screen('Flip',expwin);
-
-clicked = 0;
-while ~clicked
-  [x,y,clicked] = GetMouse(screenNumber);
-  clicked = sum(clicked);
-end
-WaitSecs(isi);
-
-DrawFormattedText(expwin,'These stimuli are defined by six variables:/n Color, Size, Orientation, Shape, Location, and Screen Position./n/n/nClick anywhere to continue','center','center',white);
-Screen('Flip',expwin);
-
-clicked = 0;
-while ~clicked
-  [x,y,clicked] = GetMouse(screenNumber);
-  clicked = sum(clicked);
-end
-WaitSecs(isi);
-
-
-
 
 %% show all the dimensions
 dimnames = fieldnames(stimVar);

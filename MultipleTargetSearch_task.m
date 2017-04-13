@@ -29,7 +29,7 @@ for idx = 1:dim
 	targets(idx).subcat = temp(idx);
 end
 
-task.instructions = {'If you see'};
+task.instructions = {'You will see'};
 if logic==0
 	nums = {' the item', ' ONE AND ONLY ONE of the two items', ' ONE AND ONLY ONE of the three items', ' ONE AND ONLY ONE of the four items'};
 	task.instructions = strcat(task.instructions, nums{dim});

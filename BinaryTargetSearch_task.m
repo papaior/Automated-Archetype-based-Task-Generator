@@ -19,6 +19,9 @@ end
 
 for idx = 1:2
 	targets(idx).category = sort(randsample(dims, task.dimension(idx), false))';
+    while sum(targets(idx).category == 5) && sum(targets(idx).category == 6)
+        targets(idx).category = sort(randsample(dims, task.dimension(idx), false))';
+    end
 	targets(idx).subcat = zeros(1,dims);
 	for jdx = targets(idx).category
 		targets(idx).subcat(jdx) = randi(fsegs(jdx));
@@ -41,7 +44,7 @@ while sum( (targets(dim1).subcat == targets(dim2).subcat) & (targets(dim1).subca
 	targets(dim1).subcat(idx) = randi(fsegs(idx));
 end
 
-task.instructions = {'If you see'};
+task.instructions = {'You will see'};
 if logic==0
 	task.instructions = strcat(task.instructions, ' ONE AND ONLY ONE');
 else
