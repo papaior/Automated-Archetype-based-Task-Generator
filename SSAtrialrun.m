@@ -219,7 +219,7 @@ while trial <= size(stims,1)
     Screen('DrawTexture',expWin,testscreen); %load texture into the online window
     if noclick
       Screen('TextSize',expWin,txtsize);
-      DrawFormattedText(expWin,'Click on a stimulus to see the description','center',round(0.02*res.height),white); %add text
+      DrawFormattedText(expWin,'Click on a stimulus to see the description','center',round(0.02*res.height)+9,white); %add text
     end
     
     if ~exist('mouseOver') ||  ~mouseOver
@@ -292,7 +292,7 @@ while trial <= size(stims,1)
               
               Screen('DrawTexture',mOScreen,testscreen);%copy testscreen to mO screen
               Screen('TextSize',mOScreen,txtsize);
-              DrawFormattedText(mOScreen,mouseOverString,'center',round(0.02*res.height),white); %add text
+              DrawFormattedText(mOScreen,mouseOverString,'center',round(0.02*res.height)+9,white); %add text
               Screen('DrawTexture',expWin,mOScreen)%load texture into the online window
               mOscreentime = Screen('Flip',expWin); %flip
               Screen('DrawTexture',expWin,testscreen);%reset screen
