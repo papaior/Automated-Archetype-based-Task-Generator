@@ -321,7 +321,7 @@ while trial <= size(stims,1)
                 for ithpos = 1:size(highlightPos,1)
                   feedbackith(ithpos) = ismember(highlightPos(ithpos,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
                 end
-                feedback(trial) = (sum(feedbackith) == length(stimtargets(trial).screenno));
+                feedback(trial) = ((sum(feedbackith) == length(stimtargets(trial).screenno)) && (length(feedbackith) == length(stimtargets(trial).screenno)));
               end
               cont = 1;
             end
