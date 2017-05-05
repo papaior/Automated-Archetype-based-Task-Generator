@@ -8,7 +8,7 @@ stimVar = stimVar.stimVar;
 screens = Screen('Screens');
 screenNumber = max(screens);
 % screenNumber = 0;
-Screen('Preference', 'DefaultFontName', 'Helvetica' );
+Screen('Preference', 'DefaultFontName', 'Arial' );
 
 fonts = struct2table(FontInfo('Fonts'));
 stimfontnum = fonts.number(strcmp('Open Sans Condensed Bold',fonts.name));
