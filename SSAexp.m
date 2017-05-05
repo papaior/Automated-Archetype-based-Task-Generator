@@ -10,6 +10,11 @@ answer = inputdlg(prompt, 'Experimental setup information',1,def);
 logfile = [subjNumber '_logfile'];
 save('log','logfile')
 
+clicklog = fopen(strcat(subjNumber, '_click_logfile'), 'a+');
+trial_start = now;
+fprintf(clicklog, 'Date: %s, Time: %s\n', datestr(trial_start,'yyyy/mm/dd'),datestr(trial_start,'HH:MM:SS'));
+fprintf(clicklog, 'Time\tTrial\tEvent\tScreen\tLocation\n');
+
 numTasks = 30;
 numBlock = 10;
 numPractice = 2;
@@ -82,6 +87,7 @@ taskSeq = taskSeq(randperm(numTasks));
 taskSeq = taskSeq(randperm(numTasks));
 taskSeq = taskSeq(randperm(numTasks)); % for better randomness
 
+
 for itask = 1:numTasks
   if itask <= numPractice
     givefeedback = true;
@@ -92,7 +98,8 @@ for itask = 1:numTasks
 %   taskid = randi(length(tasks));
   taskid = taskSeq(itask);
   clear stims stimtargets stimfoils SSA stimVar
-  SSAstimVar
+  SSAstimVar;
+  fprintf(clicklog, '%s Task %d\n',datestr(now-trial_start, 'MM:SS.FFF'), itask);
   run(tasks{taskid});
   run(trials{taskid});
   WaitSecs(1);
@@ -114,4 +121,6 @@ for itask = 1:numTasks
   SSAtrialrun
   
 end
+
 sca
+fclose(clicklog);

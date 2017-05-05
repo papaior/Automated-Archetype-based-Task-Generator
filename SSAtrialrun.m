@@ -110,10 +110,12 @@ DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],
 log = fopen(filename,'a+');
 fprintf(log,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tTargetScreenNo\tTargetLoc\n');
 
-clicklog = fopen(strcat(subjNumber, '_click_logfile'), 'a+');
-trial_start = now;
-fprintf(clicklog, 'Date: %s, Time: %s\n', datestr(trial_start,'yyyy/mm/dd'),datestr(trial_start,'HH:MM:SS'));
-fprintf(clicklog, 'Time\tTrial\tEvent\tScreen\tLocation\n');
+
+if ~exist('clicklog')
+  clicklog = fopen(strcat(subjNumber, '_click_logfile'), 'a+');
+  trial_start = now;
+end
+
 
 %  present trials
 trial = 1;
@@ -132,11 +134,17 @@ while trial <= size(stims,1)
     DrawFormattedText(expWin,sprintf('%s\n\n\n(Click anywhere to continue)',SSA.instructions),100,'center',textcol,[],[],[],[],[],grid.border); %prints instructions
 
     Screen('Flip',expWin);%this command presents the screen that was set up before (i.e. the instructions)
+    if trial == 1
+      WaitSecs(iti);
+    else
+      WaitSecs(isi);
+    end
   else
     Screen('DrawTexture',expWin,buttonsscreen)
     Screen('TextSize',expWin,txtsize);
     DrawFormattedText(expWin,sprintf('Do the same task as the previous trials.\n\n\n(Click anywhere to continue)'),'center','center',textcol,[],[],[],[],[],grid.border); %prints only buttons (no instructions)
     Screen('Flip',expWin);
+    WaitSecs(isi);
   end
   
   highlightPos = [0 0];
@@ -309,9 +317,9 @@ while trial <= size(stims,1)
               if ~replay
                 highlightPos = highlightPos(~ismember(highlightPos,[0 0],'rows'),:);
                 responses{trial} = highlightPos;
-                feedbackith = 0;
-                for ith = 1:size(highlightPos,1)
-                  feedbackith(ith) = ismember(highlightPos(ith,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
+                feedbackith = zeros(1,size(highlightPos,1));
+                for ithpos = 1:size(highlightPos,1)
+                  feedbackith(ithpos) = ismember(highlightPos(ithpos,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
                 end
                 feedback(trial) = all(feedbackith);
               end
@@ -348,7 +356,7 @@ end
 Screen('TextSize',expWin,txtsize);
 DrawFormattedText(expWin,sprintf('Ok, that''s it for this task!\n You got %.f out of %.f trials correct.\n\n\n(Click anywhere to continue to the next task)', sum(feedback),size(stims,1)),'center','center',textcol); %prints feedback
 fprintf(log,'\t\t\t\tTotalAccuracy\t%.f\n',sum(feedback));
-fclose(clicklog);
+% fclose(clicklog);
 Screen('Flip',expWin);
 
 %wait for mouse click to continue

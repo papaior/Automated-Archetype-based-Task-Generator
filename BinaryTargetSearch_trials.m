@@ -47,14 +47,15 @@ for trial = 1:numtrials
 			ddims = MSMatchedDims(SSATargets, genvec);
 			if ifDiscard(SSATargets, genvec)
 				stims(trial,screen,location).discard = true;
-			else
-				while ddims > 0
-					[rstim,genvec] = randomGen(location,screen,false);
-					stims(trial,screen,location) = rstim;
-					gencell{screen,location} = genvec;
-					ddims = MSMatchedDims(SSATargets, genvec);
-				end
-			end
+            else
+                stims(trial,screen,location).discard = false;
+            end
+            while ddims > 0
+                [rstim,genvec] = randomGen(location,screen,false);
+                stims(trial,screen,location) = rstim;
+                gencell{screen,location} = genvec;
+                ddims = MSMatchedDims(SSATargets, genvec);
+            end
 		end
 	end
 
@@ -135,12 +136,13 @@ end
 
 function pdims = MSMatchedDims(targets, genvec)
 	pdims = 0;
+    genvec = genvec(1:4);
 	for idx = 1:2
-		mask = targets(idx).subcat & ones(1,6);
-		if sum(mask(1:4)) == 0
+		mask = targets(idx).subcat(1:4) & ones(1,4);
+		if sum(mask) == 0
 			continue;
 		end
-		if sum((targets(idx).subcat == genvec) == mask) == 6
+		if sum((targets(idx).subcat(1:4) == genvec) == mask) == 4
 			pdims = pdims+1;
 		end
 	end

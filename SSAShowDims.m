@@ -104,7 +104,7 @@ end
 %% Show instructions
 emptyscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);
 Screen('TextSize', expWin, 30);
-DrawFormattedText(expWin,'Welcome!\n\nYou''re going to be asked to do a series of tasks involving visual stimuli.\n\n\nClick anywhere to continue','center','center',white);
+DrawFormattedText(expWin,'Welcome!\n\nYou''re going to be asked to do a series of tasks involving visual stimuli.\nYou will be asked to find certain target stimuli and mark them.\n\n\nClick anywhere to continue','center','center',white);
 Screen('Flip',expWin);
 
 clicked = 0;
@@ -228,7 +228,7 @@ for idx = 5:6
 		while screen <= 9
 			Screen('TextSize', expWin, 20);
 			Screen('DrawTexture', expWin, gridscreen);
-			message = 'You can see the current screen number below in the experiment.\nYou can also cycle through the screens by clicking the Prev and Next buttons.';
+			message = 'There are nine screens each trial.\nYou can see the current screen number below in the experiment.\nYou can also cycle through the screens by clicking the Prev and Next buttons.';
 			DrawFormattedText(expWin, message, 'center', 35, white);
 			DrawFormattedText(expWin, 'Click finish to continue.', 'center', 'center', white,[],[],[],[],[],[0,res.height-50,res.width,res.height]);
 			letterscreen = Screen('OpenOffscreenWindow', screenNumber, grid.bgcol, rect);
@@ -271,10 +271,16 @@ for idx = 5:6
 			  mouse = sum(mouseb);
 			  if mouse ~= 0 %if click happened, find out where
 			    if sp.button1(1) <= mousex && mousex <= sp.button1(3) && sp.button1(2) < mousey && mousey < sp.button1(4) %if on prev button, go to previous screen
-			      screen = max(1,screen-1);
+			      if screen == 1
+                      continue;
+                  end
+                  screen = max(1,screen-1);
 			      cont = 1;
 			    elseif sp.button2(1) <= mousex && mousex <= sp.button2(3) && sp.button2(2) <= mousey && mousey <= sp.button2(4) %if on next button, go to next screen
-			      screen = min(9,screen+1);
+			      if screen ==9
+                      continue;
+                  end
+                  screen = min(9,screen+1);
 			      cont = 1;
 			    end
 			    for ith = 1

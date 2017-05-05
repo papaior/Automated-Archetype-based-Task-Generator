@@ -51,14 +51,15 @@ for trial = 1:numtrials
 			[ddims, ldims] = matchedDims(SSATargets, genvec);
 			if ldims > 0
 				stims(trial,screen,location).discard = true;
-			else
-				while ddims > 0
-					[rstim,genvec] = randomGen(location,screen,false);
-					stims(trial,screen,location) = rstim;
-					gencell{screen,location} = genvec;
-					[ddims, ldims] = matchedDims(SSATargets, genvec);
-				end
-			end
+            else
+                stims(trial,screen,location).discard = false;
+            end
+            while ddims > 0
+                [rstim,genvec] = randomGen(location,screen,stims(trial,screen,location).discard);
+                stims(trial,screen,location) = rstim;
+                gencell{screen,location} = genvec;
+                [ddims, ldims] = matchedDims(SSATargets, genvec);
+            end
 		end
 	end
 
