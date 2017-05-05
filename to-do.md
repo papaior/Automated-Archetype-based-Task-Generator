@@ -11,4 +11,5 @@
 - [x] split tasks/trials generation
 - [x] figure out names for the archetypes to name the files
 - [x] update trial-run
-- [ ] fix the bug where the feedback is counted as correct when in fact some or all targets are not selected
+- [x] fix the bug where the feedback is counted as correct when in fact some or all targets are not selected
+- [ ] update the logfile to be more informative + fix some weird characters in the log file
