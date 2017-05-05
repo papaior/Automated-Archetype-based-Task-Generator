@@ -107,8 +107,8 @@ Screen('TextSize',gridscreen,sp.textsize);
 DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],[],sp.button2);
 
 %open logfile
-log = fopen(filename,'a+');
-fprintf(log,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tTargetScreenNo\tTargetLoc\n');
+logfile = fopen(filename,'a+');
+fprintf(logfile,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tTargetScreenNo\tTargetLoc\n');
 
 
 if ~exist('clicklog')
@@ -321,7 +321,7 @@ while trial <= size(stims,1)
                 for ithpos = 1:size(highlightPos,1)
                   feedbackith(ithpos) = ismember(highlightPos(ithpos,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
                 end
-                feedback(trial) = all(feedbackith);
+                feedback(trial) = (sum(feedbackith) == length(stimtargets(trial).screenno));
               end
               cont = 1;
             end
@@ -340,7 +340,7 @@ while trial <= size(stims,1)
   WaitSecs(iti); %iti
   
   %write info in logfile
-  fprintf(log,'%s\t%s\t%.f\t%s\t%s\t%.f\t%.f\t%.f\n',datestr(now,'yyyy/mm/dd'),datestr(now,'HH:MM:SS'),trial,response{:},stimtargets(trial).correct,feedback(trial),stimtargets(trial).screenno,stimtargets(trial).locno);
+  fprintf(logfile,'%s\t%s\t%.f\t%s\t%s\t%.f\t%.f\t%.f\n',datestr(now,'yyyy/mm/dd'),datestr(now,'HH:MM:SS'),trial,response{:},stimtargets(trial).correct,feedback(trial),stimtargets(trial).screenno,stimtargets(trial).locno);
   
   
   if givefeedback
@@ -355,7 +355,7 @@ end
 
 Screen('TextSize',expWin,txtsize);
 DrawFormattedText(expWin,sprintf('Ok, that''s it for this task!\n You got %.f out of %.f trials correct.\n\n\n(Click anywhere to continue to the next task)', sum(feedback),size(stims,1)),'center','center',textcol); %prints feedback
-fprintf(log,'\t\t\t\tTotalAccuracy\t%.f\n',sum(feedback));
+fprintf(logfile,'\t\t\t\tTotalAccuracy\t%.f\n',sum(feedback));
 % fclose(clicklog);
 Screen('Flip',expWin);
 
