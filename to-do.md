@@ -6,8 +6,9 @@
 - [x] delete comma before 'and's in instructions
 - [x] change a(n) to comply with the vowels
 - [x] add text "click to see features"
-- [ ] add text "no target present" if giving feedback (I don't think we need this)
+- [x] add text "no target present" if giving feedback (I don't think we need this)
 - [x] new archetype two targets with up to four dimensions in total (big x and red y)
 - [x] split tasks/trials generation
-- [ ] figure out names for the archetypes to name the files
+- [x] figure out names for the archetypes to name the files
 - [x] update trial-run
+- [ ] fix the bug where the feedback is counted as correct when in fact some or all targets are not selected
