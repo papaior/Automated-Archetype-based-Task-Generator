@@ -1,4 +1,4 @@
-load('SSASpecs.mat');
+
 
 %specify grid dimensions and position
 grid.rectsize = [res.width*1/5 res.height*1/5]; %size of one grid rectangle
@@ -108,7 +108,7 @@ DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],
 
 %open logfile
 logfile = fopen(filename,'a+');
-fprintf(logfile,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tTargetScreenNo\tTargetLoc\n');
+fprintf(logfile,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tDetailedAccuracy\tTargetScreenNo\tTargetLoc\n');
 
 
 if ~exist('clicklog')
@@ -120,6 +120,7 @@ end
 %  present trials
 trial = 1;
 replay = 0;
+feedbackDetails = cell(size(stimtargets,2),1);
 while trial <= size(stims,1)
   %present instructions
   if replay %if replaying, show replay instructions
@@ -311,6 +312,7 @@ while trial <= size(stims,1)
           end
           for ith = 1:numbuttons
             if buttons.loc(ith,1)<= mousex && mousex <=buttons.loc(ith,3) && buttons.loc(ith,2)<= mousey && mousey <=buttons.loc(ith,4)
+              feedbackith = [];
               response = buttons.label(ith);
               fprintf(clicklog, '%s\t%d\t%s\t%d\t%d\n', datestr(now-trial_start, 'MM:SS.FFF'), trial, response{:}, screen, 0);
               screen = size(stims,2)+1; %this ends this loop to move to the next trial
@@ -318,10 +320,11 @@ while trial <= size(stims,1)
                 highlightPos = highlightPos(~ismember(highlightPos,[0 0],'rows'),:);
                 responses{trial} = highlightPos;
                 feedbackith = zeros(1,size(highlightPos,1));
-                for ithpos = 1:size(highlightPos,1)
-                  feedbackith(ithpos) = ismember(highlightPos(ithpos,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
+                for ith = 1:size(highlightPos,1)
+                  feedbackith(ith) = ismember(highlightPos(ith,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
                 end
-                feedback(trial) = ((sum(feedbackith) == length(stimtargets(trial).screenno)) && (length(feedbackith) == length(stimtargets(trial).screenno)));
+                feedback(trial) = all(feedbackith);
+                feedbackDetails{trial} = feedbackith;
               end
               cont = 1;
             end
@@ -340,7 +343,7 @@ while trial <= size(stims,1)
   WaitSecs(iti); %iti
   
   %write info in logfile
-  fprintf(logfile,'%s\t%s\t%.f\t%s\t%s\t%.f\t%.f\t%.f\n',datestr(now,'yyyy/mm/dd'),datestr(now,'HH:MM:SS'),trial,response{:},stimtargets(trial).correct,feedback(trial),stimtargets(trial).screenno,stimtargets(trial).locno);
+  fprintf(logfile,'%s\t%s\t%.f\t%s\t%s\t%s\t%s\t%s\t%s\n',datestr(now,'yyyy/mm/dd'),datestr(now,'HH:MM:SS'),trial,response{:},stimtargets(trial).correct,num2str(feedback(trial)),strrep(num2str(feedbackDetails{trial}),'  ',','),num2str(stimtargets(trial).screenno),num2str(stimtargets(trial).locno));
   
   
   if givefeedback
@@ -356,7 +359,8 @@ end
 Screen('TextSize',expWin,txtsize);
 DrawFormattedText(expWin,sprintf('Ok, that''s it for this task!\n You got %.f out of %.f trials correct.\n\n\n(Click anywhere to continue to the next task)', sum(feedback),size(stims,1)),'center','center',textcol); %prints feedback
 fprintf(logfile,'\t\t\t\tTotalAccuracy\t%.f\n',sum(feedback));
-% fclose(clicklog);
+
+fclose(clicklog);
 Screen('Flip',expWin);
 
 %wait for mouse click to continue

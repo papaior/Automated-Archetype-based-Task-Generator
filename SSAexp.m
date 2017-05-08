@@ -1,11 +1,9 @@
-clear all
-
 %% Collect subjectg info and initialize logfile
 ListenChar;
-prompt = {'Enter subject number','Enter subject age','Enter subject gender'};
-def={'99', '0', 'O'};
+prompt = {'Enter subject number','Enter subject age','Enter subject gender','Manual Run'};
+def={'99', '0', 'O','0'};
 answer = inputdlg(prompt, 'Experimental setup information',1,def);
-[subjNumber, subjAge, subjGender]  = deal(answer{:});
+[subjNumber, subjAge, subjGender, manualRun]  = deal(answer{:});
 
 logfile = [subjNumber '_logfile'];
 save('log','logfile')
@@ -76,50 +74,54 @@ trials = {'SingleTargetSearch_trials','MultipleTargetSearch_trials.m','BinaryTar
 taskSeq = zeros(1,numTasks);
 taskSeqp = 1;
 for idx = 1:numel(tasks)
-	ntask = floor(numTasks/numel(tasks));
-	if idx < mod(numTasks, numel(tasks))
-		ntask = ntask +1;
-	end
-	taskSeq(taskSeqp:taskSeqp+ntask-1) = idx;
-	taskSeqp = taskSeqp + ntask;
+  ntask = floor(numTasks/numel(tasks));
+  if idx < mod(numTasks, numel(tasks))
+    ntask = ntask +1;
+  end
+  taskSeq(taskSeqp:taskSeqp+ntask-1) = idx;
+  taskSeqp = taskSeqp + ntask;
 end
 taskSeq = taskSeq(randperm(numTasks));
 taskSeq = taskSeq(randperm(numTasks));
 taskSeq = taskSeq(randperm(numTasks)); % for better randomness
 
+if ~str2double(manualRun)
+  for itask = 1:numTasks
+    if itask <= numPractice
+      givefeedback = true;
+    else
+      givefeedback = false;
+    end
+    
+    %   taskid = randi(length(tasks));
+    taskid = taskSeq(itask);
+    clear stims stimtargets stimfoils SSA stimVar
+    SSAstimVar
+    run(tasks{taskid});
+    run(trials{taskid});
+    WaitSecs(1);
+    if mod(itask, numBlock) == 0 && itask~=numTasks
+      Screen('TextSize',expWin,txtsize);
+      DrawFormattedText(expWin, 'You can take a break now.\nClick anywhere to continue the experiment.', 'center', 'center');
+      Screen('Flip', expWin);
+      
+      mouse = 0;
+      while mouse == 0
 
-for itask = 1:numTasks
-  if itask <= numPractice
-    givefeedback = true;
-  else
-    givefeedback = false;
-  end
-	
-%   taskid = randi(length(tasks));
-  taskid = taskSeq(itask);
-  clear stims stimtargets stimfoils SSA stimVar
-  SSAstimVar;
-  fprintf(clicklog, '%s Task %d\n',datestr(now-trial_start, 'MM:SS.FFF'), itask);
-  run(tasks{taskid});
-  run(trials{taskid});
-  WaitSecs(1);
-  if mod(itask, numBlock) == 0 && itask~=numTasks
-    Screen('TextSize',expWin,txtsize);
-    DrawFormattedText(expWin, 'You can take a break now.\nClick anywhere to continue the experiment.', 'center', 'center');
-    Screen('Flip', expWin);
-
-    mouse = 0;
-    while mouse == 0
         [mousex,mousey,mouseb] = GetMouse(screenNumber);
         mouse = sum(mouseb);
+      end
+      WaitSecs(isi);
     end
-    WaitSecs(isi);
-   end
-
-  
-  save([subjNumber '_task' num2str(itask)])
+    
+    load('SSASpecs.mat');
+    save([subjNumber '_task' num2str(itask)])
+    fprintf(logfile,'Task %.f\n',itask)
+    SSAtrialrun
+    
+  end
+else
   SSAtrialrun
-  
 end
 
 sca

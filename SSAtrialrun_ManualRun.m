@@ -1,3 +1,4 @@
+
 logfile = 'ManualRun_logfile';
 %load('SSASpecs.mat');
 
