@@ -107,7 +107,6 @@ Screen('TextSize',gridscreen,sp.textsize);
 DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],[],sp.button2);
 
 %open logfile
-logfile = fopen(filename,'a+');
 fprintf(logfile,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tDetailedAccuracy\tTargetScreenNo\tTargetLoc\n');
 
 
@@ -323,7 +322,7 @@ while trial <= size(stims,1)
                 for ith = 1:size(highlightPos,1)
                   feedbackith(ith) = ismember(highlightPos(ith,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
                 end
-                feedback(trial) = all(feedbackith);
+                feedback(trial) = ((sum(feedbackith) == length(stimtargets(trial).screenno)) && (length(feedbackith) == length(stimtargets(trial).screenno)));
                 feedbackDetails{trial} = feedbackith;
               end
               cont = 1;
@@ -360,7 +359,7 @@ Screen('TextSize',expWin,txtsize);
 DrawFormattedText(expWin,sprintf('Ok, that''s it for this task!\n You got %.f out of %.f trials correct.\n\n\n(Click anywhere to continue to the next task)', sum(feedback),size(stims,1)),'center','center',textcol); %prints feedback
 fprintf(logfile,'\t\t\t\tTotalAccuracy\t%.f\n',sum(feedback));
 
-fclose(clicklog);
+% fclose(clicklog);
 Screen('Flip',expWin);
 
 %wait for mouse click to continue

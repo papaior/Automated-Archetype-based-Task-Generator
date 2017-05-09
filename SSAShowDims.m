@@ -177,6 +177,7 @@ for idx = 1:4
 		ystart = ystart + heightS;
 	end
 	Screen('Flip', expWin);
+	WaitSecs(isi);
 	clicked = 0;
 	while ~clicked
 		[x,y,clicked] = GetMouse(screenNumber);

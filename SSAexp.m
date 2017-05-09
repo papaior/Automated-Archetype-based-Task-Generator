@@ -5,8 +5,8 @@ def={'99', '0', 'O','0'};
 answer = inputdlg(prompt, 'Experimental setup information',1,def);
 [subjNumber, subjAge, subjGender, manualRun]  = deal(answer{:});
 
-logfile = [subjNumber '_logfile'];
-save('log','logfile')
+filename = [subjNumber '_logfile'];
+save('log','filename')
 
 clicklog = fopen(strcat(subjNumber, '_click_logfile'), 'a+');
 trial_start = now;
@@ -61,7 +61,6 @@ textcol = [1 1 1]*black;
 txtsize = round(res.height/28);
 isi = 0.300;
 iti = 1;
-filename = logfile;
 
 mouseOverText = true;
 
@@ -115,10 +114,12 @@ if ~str2double(manualRun)
     end
     
     load('SSASpecs.mat');
-    save([subjNumber '_task' num2str(itask)])
-    fprintf(logfile,'Task %.f\n',itask)
+    save([subjNumber '_task' num2str(itask)]);
+    logfile = fopen(filename,'a+');
+    fprintf(logfile,'Task %.f\n',itask);
+
     SSAtrialrun
-    
+    fclose(logfile);
   end
 else
   SSAtrialrun

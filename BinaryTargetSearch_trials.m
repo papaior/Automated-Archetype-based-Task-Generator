@@ -47,17 +47,17 @@ for trial = 1:numtrials
 			ddims = MSMatchedDims(SSATargets, genvec);
 			if ifDiscard(SSATargets, genvec)
 				stims(trial,screen,location).discard = true;
-            else
-                stims(trial,screen,location).discard = false;
-            end
-            while ddims > 0
-                [rstim,genvec] = randomGen(location,screen,false);
-                stims(trial,screen,location) = rstim;
-                gencell{screen,location} = genvec;
-                ddims = MSMatchedDims(SSATargets, genvec);
-            end
-		end
-	end
+      else
+        stims(trial,screen,location).discard = false;
+      end
+      while ddims > 0
+        [rstim,genvec] = randomGen(location,screen,stims(trial,screen,location).discard);
+        stims(trial,screen,location) = rstim;
+        gencell{screen,location} = genvec;
+        ddims = MSMatchedDims(SSATargets, genvec);
+      end
+    end
+  end
 
 	% assignin('base','SSATargets',SSATargets);
 	% assignin('base','gencell',gencell);
