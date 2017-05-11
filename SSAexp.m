@@ -122,7 +122,10 @@ if ~str2double(manualRun)
     fclose(logfile);
   end
 else
+  logfile = fopen(filename,'a+');
+  fprintf(logfile,'Task %.f\n',itask);
   SSAtrialrun
+  fclose(logfile);
 end
 
 sca
