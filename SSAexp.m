@@ -119,6 +119,7 @@ if ~str2double(manualRun)
     fprintf(logfile,'Task %.f\n',itask);
 
     SSAtrialrun
+    save([subjNumber '_task' num2str(itask) '_response'], 'stimtargets', 'recordedResponses');
     fclose(logfile);
   end
 else

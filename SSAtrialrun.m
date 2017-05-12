@@ -120,6 +120,7 @@ end
 trial = 1;
 replay = 0;
 feedbackDetails = cell(size(stimtargets,2),1);
+recordedResponses = struct();
 while trial <= size(stims,1)
   %present instructions
   if replay %if replaying, show replay instructions
@@ -319,11 +320,18 @@ while trial <= size(stims,1)
                 highlightPos = highlightPos(~ismember(highlightPos,[0 0],'rows'),:);
                 responses{trial} = highlightPos;
                 feedbackith = zeros(1,size(highlightPos,1));
+                recordedResponses(trial).resNum = 0;
+                for ith = 1:size(highlightPos,1)
+                  recordedResponses(trial).resNum = recordedResponses(trial).resNum + 1;
+                  recordedResponses(trial).screenno(recordedResponses(trial).resNum) = highlightPos(ith, 1);
+                  recordedResponses(trial).locno(recordedResponses(trial).resNum) = highlightPos(ith, 2);
+                end
                 for ith = 1:size(highlightPos,1)
                   feedbackith(ith) = ismember(highlightPos(ith,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
                 end
                 feedback(trial) = ((sum(feedbackith) == length(stimtargets(trial).screenno)) && (length(feedbackith) == length(stimtargets(trial).screenno)));
                 feedbackDetails{trial} = feedbackith;
+                recordedResponses(trial).correct = feedback(trial);
               end
               cont = 1;
             end
