@@ -70,6 +70,10 @@ mouseOverText = true;
 tasks = {'SingleTargetSearch_task','MultipleTargetSearch_task.m','BinaryTargetSearch_task.m'};
 trials = {'SingleTargetSearch_trials','MultipleTargetSearch_trials.m','BinaryTargetSearch_trials.m'};
 
+accuracy = 0;
+perfectTask = 0;
+badTask = 0;
+
 taskSeq = zeros(1,numTasks);
 taskSeqp = 1;
 for idx = 1:numel(tasks)
@@ -121,6 +125,14 @@ if ~str2double(manualRun)
     SSAtrialrun
     save([subjNumber '_task' num2str(itask) '_response'], 'stimtargets', 'recordedResponses');
     fclose(logfile);
+    taskcorrect = sum([recordedResponses(:).correct]);
+    accuracy = accuracy + taskcorrect;
+    
+    if taskcorrect == 5
+      perfectTask = perfectTask+1;
+    elseif taskcorrect < 3
+      badTask = badTask+1;
+    end
   end
 else
   logfile = fopen(filename,'a+');
@@ -128,6 +140,10 @@ else
   SSAtrialrun
   fclose(logfile);
 end
+accuray = accuracy/numTasks;
+logfile = fopen(filename,'a+');
+fprintf(logfile, 'Total accuracy: %f, perfect tasks: %.f, tasks with less than half accuracy: %.f\n', accuracy, perfectTask, badTask);
+fclose(logfile);
 
 sca
 fclose(clicklog);

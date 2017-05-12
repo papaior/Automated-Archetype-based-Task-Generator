@@ -57,7 +57,7 @@ grid.bgcol = white/5;
 highlightcol = [255 100 100];
 textcol = black;
 txtsize = round(res.height/28);
-isi = 0.100;
+isi = 0.300;
 iti = 1;
 
 grid.rectsize = [res.width*1/5 res.height*1/5]; %size of one grid rectangle
@@ -219,6 +219,7 @@ for idx = 5:6
 		end
 		Screen('Flip', expWin);
 		clicked = 0;
+        WaitSecs(isi);
 		while ~clicked
 			[x,y,clicked] = GetMouse(screenNumber);
 			clicked = sum(clicked);
