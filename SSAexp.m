@@ -140,7 +140,7 @@ else
   SSAtrialrun
   fclose(logfile);
 end
-accuray = accuracy/numTasks;
+accuracy = (accuracy/numTasks)/5;
 logfile = fopen(filename,'a+');
 fprintf(logfile, 'Total accuracy: %f, perfect tasks: %.f, tasks with less than half accuracy: %.f\n', accuracy, perfectTask, badTask);
 fclose(logfile);
