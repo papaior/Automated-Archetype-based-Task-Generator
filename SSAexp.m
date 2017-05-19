@@ -5,6 +5,8 @@ def={'99', '0', 'O','0'};
 answer = inputdlg(prompt, 'Experimental setup information',1,def);
 [subjNumber, subjAge, subjGender, manualRun]  = deal(answer{:});
 
+rng('shuffle');
+
 filename = [subjNumber '_logfile'];
 save('log','filename')
 
@@ -97,6 +99,7 @@ if ~str2double(manualRun)
     end
     
     %   taskid = randi(length(tasks));
+    disp(itask);
     taskid = taskSeq(itask);
     clear stims stimtargets stimfoils SSA stimVar
     SSAstimVar
