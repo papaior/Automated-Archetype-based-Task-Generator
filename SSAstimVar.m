@@ -60,16 +60,9 @@ stimVar.location.top_right = [2 0];
 stimVar.location.middle_right = [2 1];
 stimVar.location.bottom_right = [2 2];
 
-stimVar.screen.screen_1 = 1;
-stimVar.screen.screen_2 = 2;
-stimVar.screen.screen_3 = 3;
-stimVar.screen.screen_4 = 4;
-stimVar.screen.screen_5 = 5;
-stimVar.screen.screen_6 = 6;
-stimVar.screen.screen_7 = 7;
-stimVar.screen.screen_8 = 8;
-stimVar.screen.screen_9 = 9;
+stimVarSuppliment.screen.screen_1 = 1;
 
 
-save('stimVars','stimVar')
+
+save('stimVars','stimVar','stimVarSuppliment')
 

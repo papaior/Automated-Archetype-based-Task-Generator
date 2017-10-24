@@ -1,7 +1,7 @@
 
 
 %specify grid dimensions and position
-grid.rectsize = [res.width*1/5 res.height*1/5]; %size of one grid rectangle
+grid.rectsize = [res.width*1/5 res.height*1/4]; %size of one grid rectangle
 grid.pos = [res.width*1/12 res.height*1/8]; %starting position of the grid (defined at top left)
 grid.border = [grid.pos grid.pos+3*grid.rectsize]; %square making outer grid border
 grid.lines = [grid.pos(1) (grid.pos(1)+3*grid.rectsize(1)) grid.pos(1) (grid.pos(1)+3*grid.rectsize(1)) (grid.pos(1)+1*grid.rectsize(1)) (grid.pos(1)+1*grid.rectsize(1)) (grid.pos(1)+2*grid.rectsize(1)) (grid.pos(1)+2*grid.rectsize(1)); ... %x coordinates (pairs of cooedinates denote the start and end of a line)
@@ -96,17 +96,18 @@ gridscreen = Screen('OpenOffscreenWindow',screenNumber,bgcol,rect);%Also starts 
 Screen('FillRect',gridscreen,grid.bgcol,grid.border);%creates the background for the grid
 Screen('FrameRect',gridscreen,grid.col,grid.border,grid.linewidth);%creates the outline of the entire grid
 Screen('DrawLines',gridscreen,grid.lines,grid.linewidth,grid.col);%draws the inner lines
-%add screen propagation buttons
-Screen('FillRect',gridscreen,sp.col,sp.button1); %Draws the rectangle for button 1 ('previous')
-Screen('FrameRect',gridscreen,sp.framecol,sp.button1,sp.linewidth);%outlines it in grey
-Screen('TextSize',gridscreen,sp.textsize);
-DrawFormattedText(gridscreen,'Prev','center','center',sp.textcol,[],[],[],[],[],sp.button1);%prints 'prev' in the center of the rectangle. Bunch of text wrapping options left unspecified
-Screen('FillRect',gridscreen,sp.col,sp.button2);% Same process for button 2 ('next')
-Screen('FrameRect',gridscreen,sp.framecol,sp.button2,sp.linewidth);
-Screen('TextSize',gridscreen,sp.textsize);
-DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],[],sp.button2);
+% %add screen propagation buttons
+% Screen('FillRect',gridscreen,sp.col,sp.button1); %Draws the rectangle for button 1 ('previous')
+% Screen('FrameRect',gridscreen,sp.framecol,sp.button1,sp.linewidth);%outlines it in grey
+% Screen('TextSize',gridscreen,sp.textsize);
+% DrawFormattedText(gridscreen,'Prev','center','center',sp.textcol,[],[],[],[],[],sp.button1);%prints 'prev' in the center of the rectangle. Bunch of text wrapping options left unspecified
+% Screen('FillRect',gridscreen,sp.col,sp.button2);% Same process for button 2 ('next')
+% Screen('FrameRect',gridscreen,sp.framecol,sp.button2,sp.linewidth);
+% Screen('TextSize',gridscreen,sp.textsize);
+% DrawFormattedText(gridscreen, 'Next ' ,'center','center',sp.textcol,[],[],[],[],[],sp.button2);
 
 %open logfile
+logfile = fopen(filename,'a+');
 fprintf(logfile,'Date\tTime\tTrial\tResponse\tCorrectResponse\tAccuracy\tDetailedAccuracy\tTargetScreenNo\tTargetLoc\n');
 
 
@@ -120,7 +121,6 @@ end
 trial = 1;
 replay = 0;
 feedbackDetails = cell(size(stimtargets,2),1);
-recordedResponses = struct();
 while trial <= size(stims,1)
   %present instructions
   if replay %if replaying, show replay instructions
@@ -200,9 +200,9 @@ while trial <= size(stims,1)
       Screen('DrawTexture',testscreen,letterscreen,letterrect,gridrect,stims(trial,screen,loc).orientation);
       letterscreen = Screen('OpenOffscreenWindow',screenNumber,grid.bgcol,rect); %reset letterscreen
     end
-    Screen('TextStyle',testscreen,0);%Prints the screen number nice and big in the bottom
-    Screen('TextSize',testscreen,round(txtsize*1.2));
-    DrawFormattedText(testscreen,sprintf('Screen %1.f',screen),'center','center',textcol,[],[],[],[],[],[0 (grid.border(4)+ grid.rectsize(2)/2) res.width (grid.border(4)+grid.rectsize(2)/2+sp.rectsize(2))]);
+    %Screen('TextStyle',testscreen,0);%Prints the screen number nice and big in the bottom
+    %Screen('TextSize',testscreen,round(txtsize*1.2));
+    %DrawFormattedText(testscreen,sprintf('Screen %1.f',screen),'center','center',textcol,[],[],[],[],[],[0 (grid.border(4)+ grid.rectsize(2)/2) res.width (grid.border(4)+grid.rectsize(2)/2+sp.rectsize(2))]);
     
     Screen('DrawTexture',highlightscreen,testscreen);
     
@@ -288,7 +288,7 @@ while trial <= size(stims,1)
                 end
               end
               
-              mouseOverString = sprintf('%s, %s, %s %s on the %s of %s ',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape,mouseOverValues.location,mouseOverValues.screen); %create string
+              mouseOverString = sprintf('%s, %s, %s %s on the %s',mouseOverValues.size,mouseOverValues.colors,mouseOverValues.orientation ,mouseOverValues.shape,mouseOverValues.location); %create string
               mouseOverString = strrep(mouseOverString,'_',' ');
               
               Screen('DrawTexture',mOScreen,testscreen);%copy testscreen to mO screen
@@ -320,18 +320,11 @@ while trial <= size(stims,1)
                 highlightPos = highlightPos(~ismember(highlightPos,[0 0],'rows'),:);
                 responses{trial} = highlightPos;
                 feedbackith = zeros(1,size(highlightPos,1));
-                recordedResponses(trial).resNum = 0;
-                for ith = 1:size(highlightPos,1)
-                  recordedResponses(trial).resNum = recordedResponses(trial).resNum + 1;
-                  recordedResponses(trial).screenno(recordedResponses(trial).resNum) = highlightPos(ith, 1);
-                  recordedResponses(trial).locno(recordedResponses(trial).resNum) = highlightPos(ith, 2);
-                end
                 for ith = 1:size(highlightPos,1)
                   feedbackith(ith) = ismember(highlightPos(ith,:),[stimtargets(trial).screenno;stimtargets(trial).locno]','rows');
                 end
-                feedback(trial) = ((sum(feedbackith) == length(stimtargets(trial).screenno)) && (length(feedbackith) == length(stimtargets(trial).screenno)));
+                feedback(trial) = all(feedbackith);
                 feedbackDetails{trial} = feedbackith;
-                recordedResponses(trial).correct = feedback(trial);
               end
               cont = 1;
             end
@@ -367,7 +360,7 @@ Screen('TextSize',expWin,txtsize);
 DrawFormattedText(expWin,sprintf('Ok, that''s it for this task!\n You got %.f out of %.f trials correct.\n\n\n(Click anywhere to continue to the next task)', sum(feedback),size(stims,1)),'center','center',textcol); %prints feedback
 fprintf(logfile,'\t\t\t\tTotalAccuracy\t%.f\n',sum(feedback));
 
-% fclose(clicklog);
+fclose(clicklog);
 Screen('Flip',expWin);
 
 %wait for mouse click to continue

@@ -5,10 +5,8 @@ def={'99', '0', 'O','0'};
 answer = inputdlg(prompt, 'Experimental setup information',1,def);
 [subjNumber, subjAge, subjGender, manualRun]  = deal(answer{:});
 
-rng('shuffle');
-
-filename = [subjNumber '_logfile'];
-save('log','filename')
+logfile = [subjNumber '_logfile'];
+save('log','logfile')
 
 clicklog = fopen(strcat(subjNumber, '_click_logfile'), 'a+');
 trial_start = now;
@@ -63,6 +61,7 @@ textcol = [1 1 1]*black;
 txtsize = round(res.height/28);
 isi = 0.300;
 iti = 1;
+filename = logfile;
 
 mouseOverText = true;
 
@@ -71,10 +70,6 @@ mouseOverText = true;
 
 tasks = {'SingleTargetSearch_task','MultipleTargetSearch_task.m','BinaryTargetSearch_task.m'};
 trials = {'SingleTargetSearch_trials','MultipleTargetSearch_trials.m','BinaryTargetSearch_trials.m'};
-
-accuracy = 0;
-perfectTask = 0;
-badTask = 0;
 
 taskSeq = zeros(1,numTasks);
 taskSeqp = 1;
@@ -99,8 +94,7 @@ if ~str2double(manualRun)
     end
     
     %   taskid = randi(length(tasks));
-    disp(itask);
-    taskid = taskSeq(itask);
+    taskid = 2;%taskSeq(itask);
     clear stims stimtargets stimfoils SSA stimVar
     SSAstimVar
     run(tasks{taskid});
@@ -121,32 +115,14 @@ if ~str2double(manualRun)
     end
     
     load('SSASpecs.mat');
-    save([subjNumber '_task' num2str(itask)]);
-    logfile = fopen(filename,'a+');
-    fprintf(logfile,'Task %.f\n',itask);
-
+    save([subjNumber '_task' num2str(itask)])
+    fprintf(logfile,'Task %.f\n',itask)
     SSAtrialrun
-    save([subjNumber '_task' num2str(itask) '_response'], 'stimtargets', 'recordedResponses');
-    fclose(logfile);
-    taskcorrect = sum([recordedResponses(:).correct]);
-    accuracy = accuracy + taskcorrect;
     
-    if taskcorrect == 5
-      perfectTask = perfectTask+1;
-    elseif taskcorrect < 3
-      badTask = badTask+1;
-    end
   end
 else
-  logfile = fopen(filename,'a+');
-  fprintf(logfile,'Task %.f\n',itask);
   SSAtrialrun
-  fclose(logfile);
 end
-accuracy = (accuracy/numTasks)/5;
-logfile = fopen(filename,'a+');
-fprintf(logfile, 'Total accuracy: %f, perfect tasks: %.f, tasks with less than half accuracy: %.f\n', accuracy, perfectTask, badTask);
-fclose(logfile);
 
 sca
 fclose(clicklog);
