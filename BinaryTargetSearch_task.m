@@ -19,9 +19,9 @@ end
 
 for idx = 1:2
 	targets(idx).category = sort(randsample(dims, task.dimension(idx), false))';
-    while sum(targets(idx).category == 5) && sum(targets(idx).category == 6)
-        targets(idx).category = sort(randsample(dims, task.dimension(idx), false))';
-    end
+%     while sum(targets(idx).category == 5) && sum(targets(idx).category == 6)
+%         targets(idx).category = sort(randsample(dims, task.dimension(idx), false))';
+%     end
 	targets(idx).subcat = zeros(1,dims);
 	for jdx = targets(idx).category
 		targets(idx).subcat(jdx) = randi(fsegs(jdx));
@@ -68,10 +68,10 @@ for idx = 1:2
 		nlst = fieldnames(stimVar.(varlist{5}));
 		addition = strcat(addition,{' in the '},nlst{targets(idx).subcat(5)});
 	end
-	if targets(idx).subcat(6) ~= 0
-		nlst = fieldnames(stimVar.(varlist{6}));
-		addition = strcat(addition,{' on '},nlst{targets(idx).subcat(6)});
-	end
+% 	if targets(idx).subcat(6) ~= 0
+% 		nlst = fieldnames(stimVar.(varlist{6}));
+% 		addition = strcat(addition,{' on '},nlst{targets(idx).subcat(6)});
+% 	end
 	if sum(addition{1}(2) == ['a' 'e' 'i' 'o' 'u' 'A' 'E' 'F' 'H' 'I' 'M' 'N' 'O' 'R' 'S' 'X'])
 		addition = strcat({' an'}, addition);
 	else

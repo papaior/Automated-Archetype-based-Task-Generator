@@ -7,9 +7,10 @@ task.dimension = dim;
 task.logic = logic;
 load('stimVars');
 varlist = fieldnames(stimVar);
+fieldDim = size(varlist,1);
 fields = 0;
-fsegs = zeros(6,1);
-for idx = 1:6
+fsegs = zeros(fieldDim,1);
+for idx = 1:fieldDim
 	fsegs(idx) = numel(fieldnames(stimVar.(varlist{idx})));
 	fields = fields + fsegs(idx);
 end
@@ -18,7 +19,7 @@ temp = sort(temp);
 % insseq = [3,1,4,2,5,6];
 for idx = 1:dim
 	targets(idx).category = 1;
-	for jdx = 1:6
+	for jdx = 1:fieldDim
 		if temp(idx) - fsegs(jdx) > 0
 			temp(idx) =  temp(idx) - fsegs(jdx);
 		else

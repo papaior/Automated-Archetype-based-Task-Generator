@@ -18,6 +18,8 @@ numBlock = 10;
 numPractice = 2;
 instructions = true;
 
+Screen('Preference', 'SkipSyncTests', 1);
+
 screens = Screen('Screens');
 screenNumber = max(screens);
 Screen('Preference', 'DefaultFontName', 'Helvetica')
@@ -71,6 +73,9 @@ mouseOverText = true;
 tasks = {'SingleTargetSearch_task','MultipleTargetSearch_task.m','BinaryTargetSearch_task.m'};
 trials = {'SingleTargetSearch_trials','MultipleTargetSearch_trials.m','BinaryTargetSearch_trials.m'};
 
+% tasks = {'BinaryTargetSearch_task.m'};
+% trials = {'BinaryTargetSearch_trials.m'};
+
 taskSeq = zeros(1,numTasks);
 taskSeqp = 1;
 for idx = 1:numel(tasks)
@@ -93,8 +98,8 @@ if ~str2double(manualRun)
       givefeedback = false;
     end
     
-    %   taskid = randi(length(tasks));
-    taskid = 2;%taskSeq(itask);
+    taskid = randi(length(tasks));
+%     taskid = 2;%taskSeq(itask);
     clear stims stimtargets stimfoils SSA stimVar
     SSAstimVar
     run(tasks{taskid});
@@ -116,7 +121,7 @@ if ~str2double(manualRun)
     
     load('SSASpecs.mat');
     save([subjNumber '_task' num2str(itask)])
-    fprintf(logfile,'Task %.f\n',itask)
+%     fprintf(logfile,'Task %.f\n',itask)
     SSAtrialrun
     
   end

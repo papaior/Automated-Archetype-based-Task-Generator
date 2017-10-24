@@ -14,7 +14,7 @@ end
 stims = struct();
 plist = fieldnames(stimVar);
 stimtargets = struct();
-choices = {'Present' 'Absent'};
+% choices = {'Present' 'Absent'};
 for t=1:5
   stimtargets(1,t).targetNum = 0;
   stimtargets(1,t).screenno = [];
@@ -29,7 +29,7 @@ end
 % featlist = [1,1,1,1,0,0]';
 
 
-for idx=1:6
+for idx=1:5
   stims(1,1,1).(plist{idx}) = 0;
 end
 stims(1,1,1).discard = false;
@@ -39,26 +39,25 @@ for trial = 1:numtrials
   
   gencell = cell(9);
   
-  for screen = 1:9
-    for location = 1:9
-      [rstim,genvec] = randomGen(location,screen,false);
+  screen = 1;
+  for location = 1:9
+    [rstim,genvec] = randomGen(location,screen,false);
+    stims(trial,screen,location) = rstim;
+    gencell{screen,location} = genvec;
+    ddims = MSMatchedDims(SSATargets, genvec);
+    if ifDiscard(SSATargets, genvec)
+      stims(trial,screen,location).discard = true;
+    else
+      stims(trial,screen,location).discard = false;
+    end
+    while ddims > 0
+      [rstim,genvec] = randomGen(location,screen,stims(trial,screen,location).discard);
       stims(trial,screen,location) = rstim;
       gencell{screen,location} = genvec;
       ddims = MSMatchedDims(SSATargets, genvec);
-      if ifDiscard(SSATargets, genvec)
-        stims(trial,screen,location).discard = true;
-      else
-        stims(trial,screen,location).discard = false;
-      end
-      while ddims > 0
-        [rstim,genvec] = randomGen(location,screen,stims(trial,screen,location).discard);
-        stims(trial,screen,location) = rstim;
-        gencell{screen,location} = genvec;
-        ddims = MSMatchedDims(SSATargets, genvec);
-      end
     end
   end
-
+  
   % assignin('base','SSATargets',SSATargets);
   % assignin('base','gencell',gencell);
   if strcmp(stimtargets(1,trial).correct,'Present')
@@ -77,13 +76,13 @@ for trial = 1:numtrials
   end
   selected = zeros(9);
   for idim = togen
-    screen = randi(9);
+    screen = 1;
     location = randi(9);
     while selected(screen,location) ~= false || stims(trial,screen,location).discard == true
-      screen = randi(9);
+      screen = 1;
       location = randi(9);
     end
-    if sum(SSATargets(idim).subcat & [1 1 1 1 0 0]) == 0 && sum(SSATargets(idim).subcat & [0 0 0 0 1 1]) == 1
+    if sum(SSATargets(idim).subcat & [1 1 1 1 0]) == 0 && sum(SSATargets(idim).subcat & [0 0 0 0 1]) == 1
       dislocs = true;
     else
       dislocs = false;
@@ -98,15 +97,15 @@ for trial = 1:numtrials
           stims(trial,screen,location).discard = false;
         end
       end
-      if dimx==6
-        screen = SSATargets(idim).subcat(6);
-        if dislocs
-          for idx=1:9
-            selected(screen,idx) = true;
-          end 
-          stims(trial,screen,location).discard = false;
-        end
-      end
+%       if dimx==6
+%         screen = SSATargets(idim).subcat(6);
+%         if dislocs
+%           for idx=1:9
+%             selected(screen,idx) = true;
+%           end 
+%           stims(trial,screen,location).discard = false;
+%         end
+%       end
       selected(screen,location) = true;
       dname = fieldnames(stimVar.(plist{dimx}));
       stims(trial,screen,location).(plist{dimx}) = stimVar.(plist{dimx}).(dname{SSATargets(idim).subcat(dimx)});
@@ -124,8 +123,8 @@ end
 function idiscard = ifDiscard(targets, genvec)
   idiscard = 0;
   for idx = 1:2
-    if sum(targets(idx).subcat & [1 1 1 1 0 0]) == 0 && sum(targets(idx).subcat & [0 0 0 0 1 1]) == 1
-      if sum((genvec == targets(idx).subcat) & [0 0 0 0 1 1]) > 0
+    if sum(targets(idx).subcat & [1 1 1 1 0]) == 0 && sum(targets(idx).subcat & [0 0 0 0 1]) == 1
+      if sum((genvec == targets(idx).subcat) & [0 0 0 0 1]) > 0
         idiscard = idiscard + 1;
       end
     else
@@ -152,7 +151,6 @@ function [ranstim, genvec] = randomGen(location, screen, discard)
   load('stimVars');
   plist = fieldnames(stimVar);
   llist = fieldnames(stimVar.location);
-  slist = fieldnames(stimVar.screen);
 
   genvec = zeros(1,6);
   genvec(6) = screen;
@@ -165,6 +163,5 @@ function [ranstim, genvec] = randomGen(location, screen, discard)
     ranstim.(pname) = stimVar.(pname).(olist{r});
   end
   ranstim.location = stimVar.location.(llist{location});
-  ranstim.screen = stimVar.screen.(slist{screen});
   ranstim.discard = discard;
 end

@@ -14,8 +14,8 @@ end
 stims = struct();
 plist = fieldnames(stimVar);
 stimtargets = struct();
-choices = {'Present', 'Absent'};
-for t=1:5
+% choices = {'Present', 'Absent'};
+for t=1:numtrials
 	stimtargets(1,t).targetNum = 0;
 	stimtargets(1,t).screenno = [];
 	stimtargets(1,t).locno = [];
@@ -28,12 +28,13 @@ end
 % poslist = [0,0,0,0,1,1]';
 % featlist = [1,1,1,1,0,0]';
 
-targetsvec = zeros(6,1);
+fieldDim = size(plist,1);
+targetsvec = zeros(fieldDim,1);
 for idx = 1:SSA.dimension
 	targetsvec(SSATargets(idx).category) = SSATargets(idx).subcat;
 end
 
-for idx=1:6
+for idx=1:fieldDim
 	stims(1,1,1).(plist{idx}) = 0;
 end
 stims(1,1,1).discard = false;
@@ -43,25 +44,24 @@ for trial = 1:numtrials
 	
 	gencell = cell(9);
 	
-	for screen = 1:9
-		for location = 1:9
-			[rstim,genvec] = randomGen(location,screen,false);
-			stims(trial,screen,location) = rstim;
-			gencell{screen,location} = genvec;
-			[ddims, ldims] = matchedDims(SSATargets, genvec);
-			if ldims > 0
-				stims(trial,screen,location).discard = true;
-            else
-                stims(trial,screen,location).discard = false;
-            end
-            while ddims > 0
-                [rstim,genvec] = randomGen(location,screen,stims(trial,screen,location).discard);
-                stims(trial,screen,location) = rstim;
-                gencell{screen,location} = genvec;
-                [ddims, ldims] = matchedDims(SSATargets, genvec);
-            end
-		end
-	end
+	screen = 1;
+  for location = 1:9
+    [rstim,genvec] = randomGen(location,screen,false);
+    stims(trial,screen,location) = rstim;
+    gencell{screen,location} = genvec;
+    [ddims, ldims] = matchedDims(SSATargets, genvec);
+    if ldims > 0
+        stims(trial,screen,location).discard = true;
+    else
+        stims(trial,screen,location).discard = false;
+    end
+    while ddims > 0
+        [rstim,genvec] = randomGen(location,screen,stims(trial,screen,location).discard);
+        stims(trial,screen,location) = rstim;
+        gencell{screen,location} = genvec;
+        [ddims, ldims] = matchedDims(SSATargets, genvec);
+    end
+  end
 
 % 	assignin('base','SSATargets',SSATargets);
 % 	assignin('base','gencell',gencell);
@@ -69,14 +69,14 @@ for trial = 1:numtrials
 	if strcmp(stimtargets(1,trial).correct,'Present')
 		selected = zeros(9);
 		if SSA.logic == true
-			if targetsvec(5) && targetsvec(6)
-				selected(targetsvec(6), targetsvec(5)) = true;
+			if targetsvec(5)
+				selected(1, targetsvec(5)) = true;
 			end
 			for dimx=numel(SSATargets):-1:1
-				screen = randi(9);
+				screen = 1;
 				location = randi(9);
 				while selected(screen,location) ~= false
-					screen = randi(9);
+					screen = 1;
 					location = randi(9);
 				end
 				selected(screen,location) = true;
@@ -87,15 +87,7 @@ for trial = 1:numtrials
 						stims(trial,idx,location).discard = true;
 					end
 					stims(trial,screen,location).discard = false;
-				end
-				if SSATargets(dimx).category==6
-					screen = SSATargets(dimx).subcat;
-					for idx=1:9
-						selected(screen,idx) = true;
-						stims(trial,screen,idx).discard = true;
-					end 
-					stims(trial,screen,location).discard = false;
-				end
+        end
 				dname = fieldnames(stimVar.(plist{SSATargets(dimx).category}));
 				stims(trial,screen,location).(plist{SSATargets(dimx).category}) = stimVar.(plist{SSATargets(dimx).category}).(dname{SSATargets(dimx).subcat});
 				stimtargets(1,trial).targetNum = stimtargets(1,trial).targetNum +1;
@@ -104,7 +96,7 @@ for trial = 1:numtrials
 			end
 		else
 			dimx = randi(numel(SSATargets));
-			screen = randi(9);
+			screen = 1;
 			location = randi(9);
 			if SSATargets(dimx).category==5
 				location = SSATargets(dimx).subcat;
@@ -113,15 +105,7 @@ for trial = 1:numtrials
 					stims(trial,idx,location).discard = true;
 				end
 				stims(trial,screen,location).discard = false;
-			end
-			if SSATargets(dimx).category==6
-				screen = SSATargets(dimx).subcat;
-				for idx=1:9
-					selected(screen,idx) = true;
-					stims(trial,screen,idx).discard = true;
-				end 
-				stims(trial,screen,location).discard = false;
-			end
+      end
 			dname = fieldnames(stimVar.(plist{SSATargets(dimx).category}));
 			stims(trial,screen,location).(plist{SSATargets(dimx).category}) = stimVar.(plist{SSATargets(dimx).category}).(dname{SSATargets(dimx).subcat});
 			stimtargets(1,trial).targetNum = stimtargets(1,trial).targetNum +1;
@@ -135,10 +119,10 @@ for trial = 1:numtrials
 			if numel(seldims) > 0
 				seldims = sort(seldims,'descend');
 				for dimx=1:numel(seldims)
-					screen = randi(9);
+					screen = 1;
 					location = randi(9);
 					while selected(screen,location) ~= false
-						screen = randi(9);
+						screen = 1;
 						location = randi(9);
 					end
 					selected(screen,location) = true;
@@ -149,15 +133,7 @@ for trial = 1:numtrials
 							stims(trial,idx,location).discard = true;
 						end
 						stims(trial,screen,location).discard = false;
-					end
-					if SSATargets(dimx).category==6
-						screen = SSATargets(dimx).subcat;
-						for idx=1:9
-							selected(screen,idx) = true;
-							stims(trial,screen,idx).discard = true;
-						end 
-						stims(trial,screen,location).discard = false;
-					end
+          end
 					dname = fieldnames(stimVar.(plist{SSATargets(dimx).category}));
 					stims(trial,screen,location).(plist{SSATargets(dimx).category}) = stimVar.(plist{SSATargets(dimx).category}).(dname{SSATargets(dimx).subcat});
                     
@@ -198,7 +174,6 @@ function [ranstim, genvec] = randomGen(location, screen, discard)
 	load('stimVars');
 	plist = fieldnames(stimVar);
 	llist = fieldnames(stimVar.location);
-	slist = fieldnames(stimVar.screen);
 
 	genvec = zeros(6,1);
 	genvec(6) = screen;
@@ -211,6 +186,5 @@ function [ranstim, genvec] = randomGen(location, screen, discard)
 		ranstim.(pname) = stimVar.(pname).(olist{r});
 	end
 	ranstim.location = stimVar.location.(llist{location});
-	ranstim.screen = stimVar.screen.(slist{screen});
 	ranstim.discard = discard;
 end
