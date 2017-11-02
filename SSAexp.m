@@ -7,15 +7,15 @@ answer = inputdlg(prompt, 'Experimental setup information',1,def);
 
 rng('shuffle');
 
-filename = [subjNumber '_logfile'];
-save('log','filename')
+logname = [subjNumber '_logfile'];
+save('log','logname')
 
 clicklog = fopen(strcat(subjNumber, '_click_logfile'), 'a+');
 trial_start = now;
 fprintf(clicklog, 'Date: %s, Time: %s\n', datestr(trial_start,'yyyy/mm/dd'),datestr(trial_start,'HH:MM:SS'));
 fprintf(clicklog, 'Time\tTrial\tEvent\tScreen\tLocation\n');
 
-numTasks = 30;
+numTasks = 75;
 numBlock = 10;
 numPractice = 2;
 instructions = true;
